@@ -14,6 +14,50 @@
       ]
 },
 {
+  "icon": "fa-solid fa-paintbrush",
+  "category": "Maker",
+  "api": [
+    {
+  "name": "Black Waifu",
+  "path": "/maker/blackwaifu?apikey=&url="
+    },
+    {
+      "name": "image to ghibli",
+      "path": "/tools/ghibli?apikey=&url="
+    }, 
+    {
+      "name": "Remini ×4",
+      "path": "/maker/upscale?apikey=&url="
+    }, 
+    {
+      "name": "image to anime",
+      "path": "/maker/toanime?apikey=&url="
+    }
+  ]
+},
+{
+  "icon": "fa-solid fa-circle-info",
+  "category": "information",
+  "api": [
+    {
+      "name": "Bedrock",
+      "path": "/info/bedrock?quary=&apikey="
+    },
+    {
+      "name": "IP Java",
+      "path": "/info/java?query=&apikey="
+    },
+    {
+      "name": "Jarak antar kota",
+      "path": "/info/distance?from=&to=&apikey="
+    },
+    {
+      "name": "cuaca",
+      "path": "/info/cuaca?query=&apikey="
+    }
+  ]
+},
+{
       "icon": "fa-solid fa-robot", 
       "category": "AI",
       "api": [
@@ -21,10 +65,6 @@
           "name": "Openai",
           "path": "/ai/openai?apikey=&text="
         },
-        {
-          "name": "Deepseek",
-          "path": "/ai/deepseek?apikey=&text="
-        }, 
         {
           "name": "Text 2 Image",
           "path": "/ai/text2image?apikey=&prompt="
@@ -65,7 +105,11 @@
         },
         {
           "name": "Ytmp3",
-          "path": "/download/ytmp3?apikey=&url="
+          "path": "/download/ytmp3?url=&apikey="
+        }, 
+        {
+          "name": "Ytmp4",
+          "path": "/download/ytmp4?url=&apikey="
         }, 
         {
           "name": "Snackvideo",
@@ -130,8 +174,16 @@
         {
           "name": "Screenshot Web",
           "path": "/tools/ssweb?apikey=&url="
-        }
-      ]
+        },
+        {
+          "name": "check apikey",
+          "path": "/check/apikey?apikey="
+        },
+       {
+      "name": "Ghibli",
+      "path": "/tools/ghibli?apikey=&url="
+    }
+  ]
 }, 
 {
       "icon": "fa-regular fa-images", 
@@ -139,7 +191,7 @@
       "api": [
         {
           "name": "Brat Generator",
-          "path": "/imagecreator/brat?apikey=&text="
+          "path": "/sticker/brat?apikey=&text="
         },
         {
           "name": "Remini",
@@ -176,5 +228,55 @@
           "path": "/stalk/npm?apikey=&name="
         }        
       ]
+},
+{
+  "icon": "fa-solid fa-dice",
+  "category": "Random",
+  "api": [
+    {
+      "name": "Random Foto China",
+      "path": "/random/china?apikey="
+    },
+    {
+      "name": "Random Foto Indonesia",
+      "path": "/random/indonesia?apikey="
+    },
+    {
+      "name": "Random Foto Jepang",
+      "path": "/random/indonesia?apikey="
+    },
+    {
+      "name": "Random Foto Vietnam",
+      "path": "/random/vietnam?apikey="
+    },
+    {
+      "name": "Random Foto malaysia",
+      "path": "/random/malaysia?apikey="
+    },
+    {
+      "name": "Random Foto thailand",
+      "path": "/random/thailand?apikey="
+    },
+    {
+      "name": "Random Asupan",
+      "path": "/random/asupan?apikey="
+    },
+    {
+      "name": "Blue Archive",
+      "path": "/random/blue-archive?apikey="
+    },
+    {
+      "name": "Random Kucing",
+      "path": "/random/cats?apikey="
+    },
+    {
+      "name": "Random waifu",
+      "path": "/random/waifu?apikey="
+    },
+    {
+      "name": "Random Gore",
+      "path": "/random/gore?apikey="
+    }
+  ]
 }
 ]
