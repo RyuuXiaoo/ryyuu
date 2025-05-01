@@ -1,17 +1,19 @@
 {
-  "creator": "LuxzOffcial",
-  "contact": "https://wa.me/6283131164107",
-  "links": "https://whatsapp.com/channel/0029VaZ8SnK17Emujleke03M",
-  "image": "https://files.catbox.moe/4o3l0q.jpg",
-  "apititle": "Luxz - Api",
-  "pagetitle": "LuxzOffcial - Api",
+  "creator": "UbedApi",
+  "contact": "https://wa.me/6285147777105",
+  "links": "https://chat.whatsapp.com/EfPjvlM7WIkBTfE5C2mNG1",
+  "image": "https://files.catbox.moe/y8rn53.jpg",
+  "apititle": "Ubed - Api",
+  "pagetitle": "Ubed - Api",
   "developer": [
     {
-      "name": "Luxz - Official",
-      "contact": "https://wa.me/6285624297893"
+      "name": "Ubed - Bot",
+      "contact": "https://wa.me/6285147777105"
     }
   ],
   "apikey": [
-    "luxz4107"
+    "ubed2407",
+    "free1minggu",
+    "free1"
   ]
 }
