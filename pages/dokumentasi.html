@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ubed API</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a2d9c36d9d.js" crossorigin="anonymous"></script>
+  <style>
+    body {
+      background: url('https://files.catbox.moe/56is7o.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+    }
+    .card {
+      background-color: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+    }
+    .card-title, .card-text, h4 {
+      color: #fff;
+    }
+    .category-title {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-top: 1.5rem;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .category-title i {
+      font-size: 1.5rem;
+    }
+    pre img, pre video {
+      max-width: 100%;
+      border-radius: 8px;
+    }
+    .accordion-button {
+      border-radius: 8px;
+      background-color: transparent !important;
+      border: 1px solid #0d6efd;
+      color: #0d6efd;
+      box-shadow: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <div class="text-center mb-4">
+      <img src="https://files.catbox.moe/bqgf1r.png" alt="Ubed AI Logo" style="max-width: 300px; width: 100%; border-radius: 10px; opacity: 0.9;">
+    </div>
+
+    <div id="api-list"></div>
+
+    <div class="text-center mt-5 text-light">
+      <p>© Copyright Ubed Bot</p>
+    </div>
+  </div>
+
+  <script>
+    async function loadEndpoints() {
+      const response = await fetch('/endpoints.json');
+      const data = await response.json();
+      const container = document.getElementById('api-list');
+
+      data.forEach((category, index) => {
+        const categoryDiv = document.createElement('div');
+        const collapseId = `collapse-${index}`;
+
+        categoryDiv.innerHTML = `
+          <div class="category-title">
+            <i class="${category.icon}"></i>
+            ${category.category}
+          </div>
+          <div class="accordion mb-4" id="accordion-${index}">
+            <div class="accordion-item bg-transparent border-0">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed bg-dark text-white" type="button" data-bs-toggle="collapse" data-bs-target="#${collapseId}">
+                  Show ${category.category} Endpoints
+                </button>
+              </h2>
+              <div id="${collapseId}" class="accordion-collapse collapse" data-bs-parent="#accordion-${index}">
+                <div class="accordion-body">
+                  <div class="row row-cols-1 row-cols-md-2 g-3" id="category-${index}"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        container.appendChild(categoryDiv);
+
+        const innerContainer = categoryDiv.querySelector(`#category-${index}`);
+        category.api.forEach(endpoint => {
+          const url = new URL('https://api.ubed.my.id' + endpoint.path);
+          const params = [...url.searchParams.keys()];
+          const formId = btoa(endpoint.path).replace(/=/g, '');
+          const card = document.createElement('div');
+          card.className = 'col';
+          card.innerHTML = `
+            <div class="card h-100">
+              <div class="card-body">
+                <h5 class="card-title">${endpoint.name}</h5>
+                <p class="card-text"><code>api.ubed.my.id${endpoint.path}</code></p>
+                <form id="form-${formId}">
+                  ${params.map(p => `
+                    <div class="mb-2">
+                      <input class="form-control form-control-sm" type="text" name="${p}" placeholder="${p}" required>
+                    </div>`).join('')}
+                  <button type="submit" class="btn btn-sm btn-primary">Execute</button>
+                </form>
+                <pre class="mt-3 p-2 bg-light rounded text-dark" style="max-height: 200px; overflow: auto;" id="result-${formId}">Waiting...</pre>
+              </div>
+            </div>
+          `;
+          innerContainer.appendChild(card);
+
+          document.getElementById(`form-${formId}`).addEventListener('submit', async e => {
+            e.preventDefault();
+            const form = e.target;
+            const query = [...form.elements].filter(el => el.name).map(el => `${el.name}=${encodeURIComponent(el.value)}`).join('&');
+            const fullUrl = `https://api.ubed.my.id${url.pathname}?${query}`;
+            const resultBox = document.getElementById(`result-${formId}`);
+            resultBox.textContent = 'Loading...';
+            try {
+              const res = await fetch(fullUrl);
+              const contentType = res.headers.get("content-type");
+              if (contentType.includes("application/json")) {
+                const json = await res.json();
+                resultBox.textContent = JSON.stringify(json, null, 2);
+              } else if (contentType.includes("image")) {
+                const blob = await res.blob();
+                const imgURL = URL.createObjectURL(blob);
+                resultBox.innerHTML = `<img src="${imgURL}" class="img-fluid"/>`;
+              } else if (contentType.includes("video")) {
+                const blob = await res.blob();
+                const videoURL = URL.createObjectURL(blob);
+                resultBox.innerHTML = `<video src="${videoURL}" controls class="img-fluid"></video>`;
+              } else {
+                const text = await res.text();
+                resultBox.textContent = text;
+              }
+            } catch (err) {
+              resultBox.textContent = `Error: ${err.message}`;
+            }
+          });
+        });
+      });
+    }
+
+    loadEndpoints();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
