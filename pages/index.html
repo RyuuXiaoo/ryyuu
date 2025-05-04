@@ -1,116 +1,146 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title id="pagetitle"></title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <style>
-    #loading-screen {
-      transition: opacity 0.5s ease;
-    }
-    #loading-screen.hidden {
-      opacity: 0;
-      visibility: hidden;
-    }
-  </style>
-</head>
-<body class="bg-[#0f0f1a] text-gray-100 font-[Poppins]">
-  <script src="https://kit.fontawesome.com/b4ed7c902a.js" crossorigin="anonymous"></script>
 
-  <!-- Loading Screen -->
-  <div id="loading-screen" class="fixed inset-0 bg-[#0f0f1a] flex items-center justify-center z-50">
-    <div class="text-center">
-      <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-white mx-auto mb-4"></div>
-      <p class="font-normal text-lg">Loading...</p>
-    </div>
+<!DOCTYPE html>  <html lang="en">  
+<head>  
+  <meta charset="utf-8" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />  
+  <title id="pagetitle"></title>  
+  <script src="https://cdn.tailwindcss.com"></script>  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet" />  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />  
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />  
+  <style>  
+    #loading-screen {  
+      transition: opacity 0.5s ease;  
+    }  
+    #loading-screen.hidden {  
+      opacity: 0;  
+      visibility: hidden;  
+    }  
+  </style>  
+</head>  
+<body class="bg-[#0f0f1a] text-gray-100 font-[Poppins]">  
+  <script src="https://kit.fontawesome.com/b4ed7c902a.js" crossorigin="anonymous"></script>    <!-- Loading Screen -->    <div id="loading-screen" class="fixed inset-0 bg-[#0f0f1a] flex items-center justify-center z-50">  
+    <div class="text-center">  
+      <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-white mx-auto mb-4"></div>  
+      <p class="font-normal text-lg">Loading...</p>  
+    </div>  
+  </div>    <div class="flex overflow-hidden">  
+    <!-- Sidebar -->  
+    <div id="sidebar" class="bg-[#181828] w-70 space-y-6 py-7 px-1 fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out overflow-y-auto z-20">  
+      <a class="flex items-center space-x-2 px-4">  
+        <img id="logo" src="" alt="Logo" class="h-8 w-8 rounded-lg" />  
+        <span id="webtitle" class="text-[20px] text-gray-100 font-semibold"></span>  
+      </a>  
+      <nav class="transition-all duration-600 eass" id="menu"></nav>  
+    </div>  <!-- Content -->  
+<div class="flex-1 flex flex-col">  
+  <header class="flex justify-between items-center bg-[#181828] py-3 px-7 fixed w-full z-10">  
+    <button id="menu-btn" class="text-2xl text-gray-100 focus:outline-none md:hidden">  
+      <i class="fas fa-bars"></i>  
+    </button>  
+    <div id="webtitle" class="flex text-center items-center font-semibold text-[20px] text-gray-100"></div>  
+    <div class="flex items-center">  
+      <a id="profile-links" href="#"><img id="profile-pic" src="" alt="Profile" class="h-10 w-10 rounded-full" /></a>  
+    </div>  
+  </header>  
+
+  <main class="flex-1 overflow-x-hidden overflow-y-auto mt-[5rem] bg-[#0f0f1a]">  
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">  
+        <div class="bg-[#1f1f2e] p-6 rounded-2xl shadow-lg flex items-center transition-all duration-300">  
+          <i class="fa-solid fa-globe text-4xl text-blue-500 mr-4"></i>  
+          <div class="leading-[7px]">  
+            <h2 class="text-lg font-normal mb-2">Status Server</h2>  
+            <p id="total-request" class="flex items-center gap-1 font-normal">  
+              <i class="fa-solid fa-circle text-green-500 text-[8px] animate-pulse"></i>Active  
+            </p>  
+          </div>  
+        </div>  
+
+        <div class="bg-[#1f1f2e] p-6 rounded-2xl shadow-lg flex items-center transition-all duration-300">  
+          <i class="fas fa-battery-half text-4xl text-green-400 mr-4"></i>  
+          <div class="leading-[7px]">  
+            <h2 class="text-lg font-normal mb-2">Battery Status</h2>  
+            <p id="battery-status" class="font-normal text-[15px]">Fetching battery status...</p>  
+          </div>  
+        </div>  
+
+        <div class="bg-[#1f1f2e] p-6 rounded-2xl shadow-lg flex items-center transition-all duration-300">  
+          <i class="fa-solid fa-server text-4xl text-red-400 mr-4"></i>  
+          <div class="leading-[7px]">  
+            <h2 class="text-lg font-normal mb-2">IP Address</h2>  
+            <p id="ip-address" class="font-normal text-[15px]">Fetching IP address...</p>  
+          </div>  
+        </div>  
+
+        <!-- API Key Purchase Section -->  
+        <div class="bg-[#1f1f2e] p-6 rounded-2xl shadow-lg flex flex-col items-center transition-all duration-300">  
+          <h2 class="text-lg font-normal mb-2">Beli API Key</h2>  
+          <p class="font-normal text-[15px] mb-4">Web RestApi Tergokil, Akan selalu update setiap dan fix Error setiap hari.</p>  
+          <div class="flex gap-4">  
+            <a href="/dokumentasi" class="bg-green-500 text-white px-6 py-2 rounded-full hover:bg-green-400">Dokumentasi Api</a>
+          </div>  
+        </div>  
+        
+            <div class="container mx-auto px-6 py-6">  
+<div class="mt-10 bg-[#1f1f2e] p-6 rounded-2xl shadow-lg">
+  <h2 class="text-xl font-semibold mb-4 text-white">Harga API Key</h2>
+  <ul class="space-y-4">
+    <li class="flex justify-between items-center">
+      <span>1 Bulan = <strong>IDR 10.000</strong></span>
+      <a href="https://wa.me/6285147777105" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-xl text-sm">Get</a>
+    </li>
+    <li class="flex justify-between items-center">
+      <span>2 Bulan = <strong>IDR 17.000</strong></span>
+      <a href="https://wa.me/6285147777105" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-xl text-sm">Get</a>
+    </li>
+    <li class="flex justify-between items-center">
+      <span>6 Bulan = <strong>IDR 40.000</strong></span>
+      <a href="https://wa.me/6285147777105" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-xl text-sm">Get</a>
+    </li>
+  </ul>
+
+  <div class="mt-6 text-sm text-gray-300">
+    <p>Gunakan Apikey Gratis <code class="bg-gray-700 px-2 py-1 rounded">free1</code> untuk mengakses fitur API sampai dengan tanggal <strong>30 Mei 2025</strong>.</p>
+    <a href="https://wa.me/6285147777105" target="_blank" class="inline-block mt-4 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium">Hubungi Owner</a>
   </div>
+ </div>
+</div>
 
-  <div class="flex overflow-hidden">
-    <!-- Sidebar -->
-    <div id="sidebar" class="bg-[#181828] w-70 space-y-6 py-7 px-1 fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out overflow-y-auto z-20">
-      <a class="flex items-center space-x-2 px-4">
-        <img id="logo" src="" alt="Logo" class="h-8 w-8 rounded-lg" />
-        <span id="webtitle" class="text-[20px] text-gray-100 font-semibold"></span>
-      </a>
-      <nav class="transition-all duration-600 eass" id="menu"></nav>
-    </div>
 
-    <!-- Content -->
-    <div class="flex-1 flex flex-col">
-      <header class="flex justify-between items-center bg-[#181828] py-3 px-7 fixed w-full z-10">
-        <button id="menu-btn" class="text-2xl text-gray-100 focus:outline-none md:hidden">
-          <i class="fas fa-bars"></i>
-        </button>
-        <div id="webtitle" class="flex text-center items-center font-semibold text-[20px] text-gray-100"></div>
-        <div class="flex items-center">
-          <a id="profile-links" href="#"><img id="profile-pic" src="" alt="Profile" class="h-10 w-10 rounded-full" /></a>
-        </div>
-      </header>
+        <div class="bg-[#1f1f2e] p-6 rounded-2xl shadow-lg flex items-center transition-all duration-300">  
+          <div class="leading-[7px]">  
+            <h2 class="text-lg mb-2">Developer Kontributor :</h2>  
+            <p id="tqto" class="leading-tight font-normal text-[15px]">Fetching data developer...</p>  
+          </div>  
+        </div>  
+      </div>  
 
-      <main class="flex-1 overflow-x-hidden overflow-y-auto mt-[5rem] bg-[#0f0f1a]">
-        <div class="container mx-auto px-6 py-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="bg-[#1f1f2e] p-6 rounded-2xl shadow-lg flex items-center transition-all duration-300">
-              <i class="fa-solid fa-globe text-4xl text-blue-500 mr-4"></i>
-              <div class="leading-[7px]">
-                <h2 class="text-lg font-normal mb-2">Status Server</h2>
-                <p id="total-request" class="flex items-center gap-1 font-normal">
-                  <i class="fa-solid fa-circle text-green-500 text-[8px] animate-pulse"></i>Active
-                </p>
-              </div>
-            </div>
+      <!-- Banner and Button Section -->  
+      <div class="mt-10 flex flex-col items-center">  
+        <img src="https://files.catbox.moe/9bzxxw.jpg" alt="Ubed Bot" class="rounded-2xl shadow-lg w-full max-w-3xl mb-4" />  
+        <a href="https://chat.whatsapp.com/EfPjvlM7WIkBTfE5C2mNG1" target="_blank">  
+          <button class="bg-blue-600 hover:bg-blue-500 text-white font-medium py-2 px-6 rounded-full shadow-md">  
+            Menuju Ubed Bot  
+          </button>  
+        </a>  
+      </div>  
 
-            <div class="bg-[#1f1f2e] p-6 rounded-2xl shadow-lg flex items-center transition-all duration-300">
-              <i class="fas fa-battery-half text-4xl text-green-400 mr-4"></i>
-              <div class="leading-[7px]">
-                <h2 class="text-lg font-normal mb-2">Battery Status</h2>
-                <p id="battery-status" class="font-normal text-[15px]">Fetching battery status...</p>
-              </div>
-            </div>
+    </div>  
+  </main>  
+</div>
 
-            <div class="bg-[#1f1f2e] p-6 rounded-2xl shadow-lg flex items-center transition-all duration-300">
-              <i class="fa-solid fa-server text-4xl text-red-400 mr-4"></i>
-              <div class="leading-[7px]">
-                <h2 class="text-lg font-normal mb-2">IP Address</h2>
-                <p id="ip-address" class="font-normal text-[15px]">Fetching IP address...</p>
-              </div>
-            </div>
-
-            <div class="bg-[#1f1f2e] p-6 rounded-2xl shadow-lg flex items-center transition-all duration-300">
-              <div class="leading-[7px]">
-                <h2 class="text-lg mb-2">Developer Kontributor :</h2>
-                <p id="tqto" class="leading-tight font-normal text-[15px]">Fetching data developer...</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
-  </div>
-
-  <div id="tqto" class="font-normal m-6 leading-normal"></div>
-  <div id="otherlinks" class="m-7 text-blue-400 hover:text-blue-600 text-left font-normal">
-    <a class="hover:underline text-xs mb-8" href="#">Contact Developer.</a>
-    <p><a class="hover:underline mt-8 text-xs" href="#">Join Channel WhatsApp</a>
-        <p><a class="hover:underline mt-8 text-xs" href="https://www.luxzoffc.web.id">Sosial Media</a></p>
-  </div>
-
-  <!-- Footer -->
-  <footer class="fixed bottom-0 right-0 left-0 bg-[#181828] text-s text-center py-4 text-gray-100"></footer>
-
-  <script src="pages/script.js"></script>
-  <script>
-    window.addEventListener("load", function () {
-      const loader = document.getElementById("loading-screen");
-      setTimeout(() => {
-        loader.classList.add("hidden");
-      }, 1500);
-    });
-  </script>
-</body>
+  </div>    <div id="tqto" class="font-normal m-6 leading-normal"></div>  
+  <div id="otherlinks" class="m-7 text-blue-400 hover:text-blue-600 text-left font-normal">  
+    <a class="hover:underline text-xs mb-8" href="#">Contact Developer.</a>  
+    <p><a class="hover:underline mt-8 text-xs" href="#">Join Channel WhatsApp</a>  
+        <p><a class="hover:underline mt-8 text-xs" href="https://www.luxzoffc.web.id">Sosial Media</a></p>  
+  </div>    <!-- Footer -->    <footer class="fixed bottom-0 right-0 left-0 bg-[#181828] text-s text-center py-4 text-gray-100"></footer>    <script src="pages/script.js"></script>    <script>  
+    window.addEventListener("load", function () {  
+      const loader = document.getElementById("loading-screen");  
+      setTimeout(() => {  
+        loader.classList.add("hidden");  
+      }, 1500);  
+    });  
+  </script>  </body>  
 </html>
