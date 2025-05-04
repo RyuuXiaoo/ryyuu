@@ -61,6 +61,10 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/pages/index.html'));
 });
 
+app.get('/dokumentasi', (req, res) => {
+    res.sendFile(path.join(__dirname, '/pages/dokumentasi.html'));
+});
+
 app.listen(PORT, () => {
     console.log(chalk.bgHex('#90EE90').hex('#333').bold(` Server telah berjalan di `), `http://localhost:${PORT}/ `);
 });
