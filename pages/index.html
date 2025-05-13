@@ -264,6 +264,7 @@
       const apiKey = 'ubed2407';
       const apiUrl = 'https://api.ubed.my.id/ai/simi';
       const imageApiUrl = 'https://api.ubed.my.id/maker/Jadi-Apa-Aja';
+      let uploadedImageFile = null; // Variabel untuk menyimpan file gambar yang diunggah
 
       // Fungsi untuk menambahkan pesan ke tampilan chat
       function appendMessage(sender, message, imageUrl = null) {
@@ -348,7 +349,8 @@
           chatMessages.lastChild.remove(); // Hapus pesan "Sedang memproses gambar..."
           appendMessage('bot', 'Ini hasilnya:', imageObjectURL);
 
-        } catch (error) {console.error('Error sending image to AI:', error);
+        } catch (error) {
+          console.error('Error sending image to AI:', error);
           chatMessages.lastChild.textContent = 'Maaf, terjadi kesalahan saat memproses gambar.';
         }
       }
@@ -368,12 +370,20 @@
       // Event listener untuk tombol kirim
       sendButton.addEventListener('click', () => {
         const userMessage = chatInput.value.trim();
-        if (userMessage && !imageUpload.files[0]) { // Kirim hanya jika ada teks dan tidak ada gambar yang diunggah
+        if (uploadedImageFile) {
+          // Kirim gambar jika ada file yang diunggah
+          appendMessage('user', `Gambar terkirim: ${uploadedImageFile.name}`, imagePreview.src); // Tampilkan gambar di chat pengguna
+          sendImageToAPI(uploadedImageFile);
+          // Reset tampilan pratinjau dan file setelah dikirim
+          imagePreview.src = '#';
+          imagePreviewContainer.style.display = 'none';
+          imageUpload.value = '';
+          uploadedImageFile = null;
+          chatInput.value = ''; // Kosongkan input teks setelah mengirim gambar
+        } else if (userMessage) {
+          // Kirim pesan teks jika tidak ada gambar
           sendTextMessage(userMessage);
           chatInput.value = '';
-        } else if (imageUpload.files[0]) {
-          // Pengiriman gambar sudah ditangani di handleImageUpload
-          chatInput.value = ''; // Kosongkan input setelah gambar dipilih
         }
       });
 
@@ -398,23 +408,22 @@
         imagePreview.src = '#';
         imagePreviewContainer.style.display = 'none';
         imageUpload.value = ''; // Reset input file
+        uploadedImageFile = null; // Reset juga file yang diunggah
       });
 
       // Fungsi untuk menangani upload gambar
       function handleImageUpload() {
-        const file = imageUpload.files[0];
+        const file = imageUpload.files?.[0]; // Gunakan optional chaining
         if (file) {
+          uploadedImageFile = file; // Simpan file gambar
           const reader = new FileReader();
           reader.onload = (e) => {
-            appendMessage('user', `Gambar terkirim: ${file.name}`, e.target.result);
-            // Setelah gambar ditampilkan, kita akan kirim ke API
-            sendImageToAPI(file);
-            imagePreview.src = '#';
-            imagePreviewContainer.style.display = 'none';
-            imageUpload.value = ''; // Reset input file setelah dikirim
+            imagePreview.src = e.target.result;
+            imagePreviewContainer.style.display = 'flex';
           };
           reader.readAsDataURL(file);
         } else {
+          uploadedImageFile = null;
           imagePreview.src = '#';
           imagePreviewContainer.style.display = 'none';
         }
@@ -423,4 +432,3 @@
   </script>
 </body>
 </html>
-
