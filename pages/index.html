@@ -50,8 +50,13 @@
       padding: 0.75rem 1rem; /* Tambah sedikit padding vertikal */
       border-top: 1px solid #2d3748;
       align-items: center;
-      padding-bottom: env(safe-area-inset-bottom); /* Tambahkan padding bawah sesuai safe area */
+      padding-bottom: max(0px, env(safe-area-inset-bottom) - 20px); /* Coba kurangi nilai safe area */
       background-color: #181828; /* Tambahkan background color agar input terlihat jelas di atas navigasi */
+      position: fixed; /* Tetapkan posisi fixed */
+      bottom: 0; /* Meletakkan di bagian bawah */
+      left: 0;
+      width: 100%;
+      z-index: 10; /* Pastikan di atas konten utama */
     }
     .chat-input {
       flex-grow: 1;
@@ -109,7 +114,7 @@
     }
     /* Sesuaikan padding-bottom pada main untuk memberi ruang bagi input */
     main.chat-main {
-      padding-bottom: 60px; /* Kurangi padding bottom karena input sudah di bawah */
+      padding-bottom: 70px; /* Sesuaikan nilai ini */
     }
     .chat-messages::-webkit-scrollbar {
       width: 0.5em;
@@ -123,7 +128,7 @@
     }
     #imagePreviewContainer {
       position: fixed;
-      bottom: calc(60px + env(safe-area-inset-bottom)); /* Naikkan posisi preview */
+      bottom: calc(70px + max(0px, env(safe-area-inset-bottom) - 20px)); /* Naikkan posisi preview */
       left: 0;
       width: 100%;
       background-color: #181828;
