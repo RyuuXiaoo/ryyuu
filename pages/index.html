@@ -45,19 +45,34 @@
       color: #f7fafc; /* Gray-100 */
       align-self: flex-start;
     }
-    .chat-input-area {
+    .input-upload-area {
       display: flex;
-      padding: 1rem;
-      border-top: 1px solid #2d3748; /* Gray-800 */
+      padding: 0.5rem 1rem;
+      border-top: 1px solid #2d3748;
+      align-items: center;
     }
     .chat-input {
       flex-grow: 1;
       padding: 0.75rem;
       border: 1px solid #4a5568; /* Gray-600 */
       border-radius: 0.5rem;
-      margin-right: 0.75rem;
       background-color: #1a202c; /* Gray-900 */
       color: #edf2f7; /* Gray-200 */
+      margin-right: 0.5rem;
+    }
+    .upload-button {
+      background-color: transparent;
+      color: #718096; /* Gray-500 */
+      border: none;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: color 0.3s ease;
+      font-size: 1.5rem;
+      outline: none; /* Menghilangkan outline saat fokus */
+    }
+    .upload-button:hover {
+      color: #a0aec0; /* Gray-400 */
     }
     .send-button {
       background-color: #667eea; /* Indigo-400 */
@@ -70,25 +85,6 @@
     }
     .send-button:hover {
       background-color: #5a67d8; /* Indigo-500 */
-    }
-    .upload-area {
-      display: flex;
-      padding: 0.5rem 1rem;
-      border-top: 1px solid #2d3748;
-      align-items: center;
-    }
-    .upload-button {
-      background-color: #718096; /* Gray-500 */
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 0.5rem;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      margin-right: 0.5rem;
-    }
-    .upload-button:hover {
-      background-color: #5e6b7a; /* Gray-600 */
     }
     .hidden {
       display: none;
@@ -111,7 +107,7 @@
     }
     /* Sesuaikan padding-bottom pada main untuk memberi ruang bagi input */
     main.chat-main {
-      padding-bottom: 120px; /* Sesuaikan nilai ini sesuai perkiraan tinggi input area */
+      padding-bottom: 80px; /* Sesuaikan nilai ini sesuai perkiraan tinggi input area */
     }
     .chat-messages::-webkit-scrollbar {
       width: 0.5em;
@@ -161,19 +157,20 @@
           </div>
       </main>
 
-      <div class="upload-area">
+      <div class="input-upload-area">
         <input type="file" id="imageUpload" class="hidden" accept="image/*">
-        <button id="uploadButton" class="upload-button">
-          <i class="fas fa-image mr-2"></i>Upload
+        <button id="uploadButton" class="upload-button" aria-label="Upload Gambar">
+          <i class="fas fa-image"></i>
         </button>
-        <div id="imagePreviewContainer" class="ml-2 hidden">
-          <img id="imagePreview" class="max-h-16 rounded-md" src="#" alt="Pratinjau">
-        </div>
-      </div>
-
-      <div class="chat-input-area">
         <input type="text" id="chatInput" class="chat-input" placeholder="Ketik pesan...">
         <button class="send-button" id="sendButton">Kirim</button>
+      </div>
+
+      <div id="imagePreviewContainer" class="fixed bottom-[60px] left-0 w-full bg-[#181828] p-2 border-t border-gray-700 z-20 hidden">
+        <img id="imagePreview" class="max-h-32 mx-auto rounded-md" src="#" alt="Pratinjau">
+        <button id="cancelPreview" class="absolute top-2 right-2 bg-gray-700 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
     </div>
   </div>
@@ -197,6 +194,7 @@
       const imageUpload = document.getElementById('imageUpload');
       const imagePreviewContainer = document.getElementById('imagePreviewContainer');
       const imagePreview = document.getElementById('imagePreview');
+      const cancelPreviewButton = document.getElementById('cancelPreview');
       const apiKey = 'ubed2407';
       const apiUrl = 'https://api.ubed.my.id/ai/simi';
 
@@ -253,6 +251,13 @@
       // Event listener untuk input file gambar
       imageUpload.addEventListener('change', handleImageUpload);
 
+      // Event listener untuk tombol batal pratinjau
+      cancelPreviewButton.addEventListener('click', () => {
+        imagePreview.src = '#';
+        imagePreviewContainer.classList.add('hidden');
+        imageUpload.value = ''; // Reset input file
+      });
+
       // Fungsi untuk menangani upload gambar (hanya pratinjau saat ini)
       function handleImageUpload() {
         const file = imageUpload.files[0];
@@ -264,7 +269,7 @@
           };
           reader.readAsDataURL(file);
           appendMessage('user', `Mengirim gambar: ${file.name} (belum didukung API)`);
-          imageUpload.value = '';
+          // Jangan reset imageUpload.value di sini agar pratinjau tetap ada sampai dibatalkan
         } else {
           imagePreview.src = '#';
           imagePreviewContainer.classList.add('hidden');
