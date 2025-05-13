@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title id="pagetitle">Chat AI</title>
+  <title id="pagetitle">UBED AI</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet" />
@@ -93,7 +93,26 @@
     .hidden {
       display: none;
     }
-    /* Pastikan chat-messages bisa di-scroll meskipun kontennya sedikit */
+    .back-button {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      background-color: rgba(30, 41, 59, 0.8); /* Gray-800 dengan transparansi */
+      color: white;
+      border: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      font-size: 0.8rem;
+      z-index: 30; /* Pastikan di atas header dan konten lain */
+    }
+    .back-button:hover {
+      background-color: rgba(51, 65, 85, 0.9); /* Gray-700 dengan transparansi */
+    }
+    /* Sesuaikan padding-bottom pada main untuk memberi ruang bagi input */
+    main.chat-main {
+      padding-bottom: 120px; /* Sesuaikan nilai ini sesuai perkiraan tinggi input area */
+    }
     .chat-messages::-webkit-scrollbar {
       width: 0.5em;
     }
@@ -118,7 +137,7 @@
     <div id="sidebar" class="bg-[#181828] w-70 space-y-6 py-7 px-1 fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out overflow-y-auto z-20">
       <a class="flex items-center space-x-2 px-4">
         <img id="logo" src="" alt="Logo" class="h-8 w-8 rounded-lg" />
-        <span id="webtitle" class="text-[20px] text-gray-100 font-semibold">Chat AI</span>
+        <span id="webtitle" class="text-[20px] text-gray-100 font-semibold">UBED AI</span>
       </a>
       <nav class="transition-all duration-600 eass" id="menu">
         </nav>
@@ -128,12 +147,16 @@
         <button id="menu-btn" class="text-2xl text-gray-100 focus:outline-none md:hidden">
           <i class="fas fa-bars"></i>
         </button>
-        <div id="webtitle-header" class="flex text-center items-center font-semibold text-[20px] text-gray-100">Chat AI</div>
+        <div id="webtitle-header" class="flex text-center items-center font-semibold text-[20px] text-gray-100">UBED AI</div>
         <div class="flex items-center">
           </div>
       </header>
 
-      <main class="flex-1 overflow-x-hidden overflow-y-auto mt-[5rem] bg-[#0f0f1a] flex flex-col">
+      <a href="https://api.ubed.my.id" class="back-button">
+        <i class="fas fa-arrow-left mr-1"></i> Kembali
+      </a>
+
+      <main class="flex-1 overflow-x-hidden overflow-y-auto mt-[5rem] bg-[#0f0f1a] flex flex-col chat-main">
         <div class="chat-messages" id="chatMessages">
           </div>
       </main>
@@ -189,7 +212,7 @@
       // Fungsi untuk mengirim pesan teks ke API
       async function sendTextMessage(message) {
         appendMessage('user', message);
-        appendMessage('bot', 'Sedang memproses...');
+        appendMessage('bot', '💬...');
 
         try {
           const response = await fetch(`${apiUrl}?apikey=${apiKey}&text=${encodeURIComponent(message)}`);
