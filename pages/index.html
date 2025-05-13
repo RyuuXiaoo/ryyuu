@@ -29,21 +29,50 @@
       display: flex;
       flex-direction: column;
     }
+    .message-container {
+      display: flex;
+      margin-bottom: 0.5rem;
+      align-items: flex-start; /* Align items ke atas */
+    }
     .message {
       padding: 0.75rem;
       border-radius: 0.5rem;
-      margin-bottom: 0.5rem;
       clear: both;
+      word-break: break-word; /* Mencegah teks panjang merusak layout */
     }
-    .user {
-      background-color: #4a5568; /* Gray-600 */
-      color: #edf2f7; /* Gray-200 */
-      align-self: flex-end;
+    .user-message-container {
+      justify-content: flex-end; /* Pesan pengguna di kanan */
     }
-    .bot {
+    .user-message {
+      background-color: #4CAF50; /* Green */
+      color: #fff;
+      border-radius: 0.5rem 0 0.5rem 0.5rem; /* Rounded di kiri */
+      margin-left: auto; /* Dorong ke kanan */
+      margin-right: 0.5rem; /* Beri jarak dari ikon */
+    }
+    .user-icon {
+      color: #4CAF50; /* Green */
+      margin-left: 0.5rem;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+    }
+    .bot-message-container {
+      justify-content: flex-start; /* Pesan bot di kiri */
+    }
+    .bot-message {
       background-color: #2d3748; /* Gray-800 */
       color: #f7fafc; /* Gray-100 */
-      align-self: flex-start;
+      border-radius: 0 0.5rem 0.5rem 0.5rem; /* Rounded di kanan */
+      margin-right: auto; /* Dorong ke kiri */
+      margin-left: 0.5rem; /* Beri jarak dari ikon */
+    }
+    .bot-icon {
+      color: #a0aec0; /* Gray-400 */
+      margin-right: 0.5rem;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
     }
     .input-upload-area {
       display: flex;
@@ -238,10 +267,31 @@
 
       // Fungsi untuk menambahkan pesan ke tampilan chat
       function appendMessage(sender, message) {
+        const messageContainer = document.createElement('div');
+        messageContainer.classList.add('message-container');
         const messageDiv = document.createElement('div');
-        messageDiv.classList.add('message', sender);
+        messageDiv.classList.add('message');
         messageDiv.textContent = message;
-        chatMessages.appendChild(messageDiv);
+
+        if (sender === 'user') {
+          messageContainer.classList.add('user-message-container');
+          messageDiv.classList.add('user-message');
+          const userIcon = document.createElement('i');
+          userIcon.classList.add('fas', 'fa-user-circle', 'user-icon');
+          const chatBubbleIcon = document.createElement('i');
+          chatBubbleIcon.classList.add('fas', 'fa-comment', 'user-icon', 'ml-1'); // Tambahkan margin kiri
+          messageContainer.appendChild(messageDiv);
+          messageContainer.appendChild(userIcon);
+          messageContainer.appendChild(chatBubbleIcon);
+        } else if (sender === 'bot') {
+          messageContainer.classList.add('bot-message-container');
+          messageDiv.classList.add('bot-message');
+          const botIcon = document.createElement('i');
+          botIcon.classList.add('fas', 'fa-robot', 'bot-icon');
+          messageContainer.appendChild(botIcon);
+          messageContainer.appendChild(messageDiv);
+        }
+        chatMessages.appendChild(messageContainer);
         chatMessages.scrollTop = chatMessages.scrollHeight;
       }
 
@@ -317,3 +367,4 @@
   </script>
 </body>
 </html>
+
