@@ -47,9 +47,11 @@
     }
     .input-upload-area {
       display: flex;
-      padding: 0.5rem 1rem;
+      padding: 0.75rem 1rem; /* Tambah sedikit padding vertikal */
       border-top: 1px solid #2d3748;
       align-items: center;
+      padding-bottom: env(safe-area-inset-bottom); /* Tambahkan padding bawah sesuai safe area */
+      background-color: #181828; /* Tambahkan background color agar input terlihat jelas di atas navigasi */
     }
     .chat-input {
       flex-grow: 1;
@@ -107,7 +109,7 @@
     }
     /* Sesuaikan padding-bottom pada main untuk memberi ruang bagi input */
     main.chat-main {
-      padding-bottom: 80px; /* Sesuaikan nilai ini sesuai perkiraan tinggi input area */
+      padding-bottom: 60px; /* Kurangi padding bottom karena input sudah di bawah */
     }
     .chat-messages::-webkit-scrollbar {
       width: 0.5em;
@@ -118,6 +120,39 @@
     }
     .chat-messages::-webkit-scrollbar-track {
       background-color: #1a202c;
+    }
+    #imagePreviewContainer {
+      position: fixed;
+      bottom: calc(60px + env(safe-area-inset-bottom)); /* Naikkan posisi preview */
+      left: 0;
+      width: 100%;
+      background-color: #181828;
+      padding: 0.5rem;
+      border-top: 1px solid #2d3748;
+      z-index: 20;
+      display: none; /* Hidden by default */
+      justify-content: center; /* Center the image */
+    }
+    #imagePreview {
+      max-height: 150px;
+      max-width: 90%;
+      border-radius: 0.5rem;
+    }
+    #cancelPreview {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background-color: #4a5568;
+      color: white;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -148,14 +183,19 @@
           </div>
       </header>
 
-      <a href="https://api.ubed.my.id" class="back-button">
-        <i class="fas fa-arrow-left mr-1"></i> Kembali
+      <a href="https://api.ubed.my.id" class="back-button" aria-label="Kembali ke Dokumentasi">
+        <i class="fas fa-lock"></i>
       </a>
 
       <main class="flex-1 overflow-x-hidden overflow-y-auto mt-[5rem] bg-[#0f0f1a] flex flex-col chat-main">
         <div class="chat-messages" id="chatMessages">
           </div>
       </main>
+
+      <div id="imagePreviewContainer">
+        <img id="imagePreview" src="#" alt="Pratinjau">
+        <button id="cancelPreview"><i class="fas fa-times"></i></button>
+      </div>
 
       <div class="input-upload-area">
         <input type="file" id="imageUpload" class="hidden" accept="image/*">
@@ -164,13 +204,6 @@
         </button>
         <input type="text" id="chatInput" class="chat-input" placeholder="Ketik pesan...">
         <button class="send-button" id="sendButton">Kirim</button>
-      </div>
-
-      <div id="imagePreviewContainer" class="fixed bottom-[60px] left-0 w-full bg-[#181828] p-2 border-t border-gray-700 z-20 hidden">
-        <img id="imagePreview" class="max-h-32 mx-auto rounded-md" src="#" alt="Pratinjau">
-        <button id="cancelPreview" class="absolute top-2 right-2 bg-gray-700 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">
-          <i class="fas fa-times"></i>
-        </button>
       </div>
     </div>
   </div>
@@ -254,7 +287,7 @@
       // Event listener untuk tombol batal pratinjau
       cancelPreviewButton.addEventListener('click', () => {
         imagePreview.src = '#';
-        imagePreviewContainer.classList.add('hidden');
+        imagePreviewContainer.style.display = 'none';
         imageUpload.value = ''; // Reset input file
       });
 
@@ -265,14 +298,14 @@
           const reader = new FileReader();
           reader.onload = (e) => {
             imagePreview.src = e.target.result;
-            imagePreviewContainer.classList.remove('hidden');
+            imagePreviewContainer.style.display = 'flex';
           };
           reader.readAsDataURL(file);
           appendMessage('user', `Mengirim gambar: ${file.name} (belum didukung API)`);
           // Jangan reset imageUpload.value di sini agar pratinjau tetap ada sampai dibatalkan
         } else {
           imagePreview.src = '#';
-          imagePreviewContainer.classList.add('hidden');
+          imagePreviewContainer.style.display = 'none';
         }
       }
     });
