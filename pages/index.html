@@ -17,6 +17,11 @@
       opacity: 0;
       visibility: hidden;
     }
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh; /* Membuat container mengisi tinggi layar */
+    }
     .chat-messages {
       overflow-y: auto;
       flex-grow: 1;
@@ -66,6 +71,39 @@
     .send-button:hover {
       background-color: #5a67d8; /* Indigo-500 */
     }
+    .upload-area {
+      display: flex;
+      padding: 0.5rem 1rem;
+      border-top: 1px solid #2d3748;
+      align-items: center;
+    }
+    .upload-button {
+      background-color: #718096; /* Gray-500 */
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-right: 0.5rem;
+    }
+    .upload-button:hover {
+      background-color: #5e6b7a; /* Gray-600 */
+    }
+    .hidden {
+      display: none;
+    }
+    /* Pastikan chat-messages bisa di-scroll meskipun kontennya sedikit */
+    .chat-messages::-webkit-scrollbar {
+      width: 0.5em;
+    }
+    .chat-messages::-webkit-scrollbar-thumb {
+      background-color: #4a5568;
+      border-radius: 0.25em;
+    }
+    .chat-messages::-webkit-scrollbar-track {
+      background-color: #1a202c;
+    }
   </style>
 </head>
 <body class="bg-[#0f0f1a] text-gray-100 font-[Poppins]">
@@ -85,7 +123,7 @@
       <nav class="transition-all duration-600 eass" id="menu">
         </nav>
     </div>
-    <div class="flex-1 flex flex-col">
+    <div class="flex-1 flex flex-col chat-container">
       <header class="flex justify-between items-center bg-[#181828] py-3 px-7 fixed w-full z-10">
         <button id="menu-btn" class="text-2xl text-gray-100 focus:outline-none md:hidden">
           <i class="fas fa-bars"></i>
@@ -98,20 +136,22 @@
       <main class="flex-1 overflow-x-hidden overflow-y-auto mt-[5rem] bg-[#0f0f1a] flex flex-col">
         <div class="chat-messages" id="chatMessages">
           </div>
-        <div class="chat-input-area">
-          <input type="text" id="chatInput" class="chat-input" placeholder="Ketik pesan...">
-          <button class="send-button" id="sendButton">Kirim</button>
-        </div>
-        <div class="chat-input-area items-center">
-          <input type="file" id="imageUpload" class="hidden" accept="image/*">
-          <button id="uploadButton" class="bg-gray-700 text-white px-4 py-2 rounded-md mr-2">
-            <i class="fas fa-image mr-2"></i>Upload Gambar
-          </button>
-          <div id="imagePreviewContainer" class="mt-2 hidden">
-            <img id="imagePreview" class="max-h-32 rounded-md" src="#" alt="Pratinjau Gambar">
-          </div>
-        </div>
       </main>
+
+      <div class="upload-area">
+        <input type="file" id="imageUpload" class="hidden" accept="image/*">
+        <button id="uploadButton" class="upload-button">
+          <i class="fas fa-image mr-2"></i>Upload
+        </button>
+        <div id="imagePreviewContainer" class="ml-2 hidden">
+          <img id="imagePreview" class="max-h-16 rounded-md" src="#" alt="Pratinjau">
+        </div>
+      </div>
+
+      <div class="chat-input-area">
+        <input type="text" id="chatInput" class="chat-input" placeholder="Ketik pesan...">
+        <button class="send-button" id="sendButton">Kirim</button>
+      </div>
     </div>
   </div>
 
@@ -134,9 +174,10 @@
       const imageUpload = document.getElementById('imageUpload');
       const imagePreviewContainer = document.getElementById('imagePreviewContainer');
       const imagePreview = document.getElementById('imagePreview');
-      const apiKey = 'YOUR_API_KEY'; // Ganti dengan API key kamu
-      const apiUrl = 'YOUR_API_ENDPOINT'; // Ganti dengan endpoint API kamu
+      const apiKey = 'ubed2407';
+      const apiUrl = 'https://api.ubed.my.id/ai/simi';
 
+      // Fungsi untuk menambahkan pesan ke tampilan chat
       function appendMessage(sender, message) {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message', sender);
@@ -145,29 +186,51 @@
         chatMessages.scrollTop = chatMessages.scrollHeight;
       }
 
-      function sendMessage() {
-        const userMessage = chatInput.value.trim();
-        if (userMessage) {
-          appendMessage('user', userMessage);
-          chatInput.value = '';
-          sendToChatbotAPI(userMessage);
+      // Fungsi untuk mengirim pesan teks ke API
+      async function sendTextMessage(message) {
+        appendMessage('user', message);
+        appendMessage('bot', 'Sedang memproses...');
+
+        try {
+          const response = await fetch(`${apiUrl}?apikey=${apiKey}&text=${encodeURIComponent(message)}`);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          chatMessages.lastChild.remove(); // Hapus pesan "Sedang memproses..."
+          appendMessage('bot', data.result || 'Maaf, tidak ada jawaban.');
+        } catch (error) {
+          console.error('Error sending message to AI:', error);
+          chatMessages.lastChild.textContent = 'Maaf, terjadi kesalahan saat menghubungi AI.';
         }
       }
 
-      sendButton.addEventListener('click', sendMessage);
-      chatInput.addEventListener('keypress', (event) => {
-        if (event.key === 'Enter' && !event.shiftKey) {
-          event.preventDefault();
-          sendMessage();
+      // Event listener untuk tombol kirim
+      sendButton.addEventListener('click', () => {
+        const userMessage = chatInput.value.trim();
+        if (userMessage) {
+          sendTextMessage(userMessage);
+          chatInput.value = '';
         }
       });
 
-      uploadButton.addEventListener('click', () => {
-        imageUpload.click(); // Memicu klik pada input file yang tersembunyi
+      // Event listener untuk input teks (tekan Enter)
+      chatInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+          event.preventDefault();
+          sendButton.click();
+        }
       });
 
+      // Event listener untuk tombol upload gambar
+      uploadButton.addEventListener('click', () => {
+        imageUpload.click();
+      });
+
+      // Event listener untuk input file gambar
       imageUpload.addEventListener('change', handleImageUpload);
 
+      // Fungsi untuk menangani upload gambar (hanya pratinjau saat ini)
       function handleImageUpload() {
         const file = imageUpload.files[0];
         if (file) {
@@ -177,53 +240,11 @@
             imagePreviewContainer.classList.remove('hidden');
           };
           reader.readAsDataURL(file);
-          appendMessage('user', `Mengirim gambar: ${file.name}`);
+          appendMessage('user', `Mengirim gambar: ${file.name} (belum didukung API)`);
           imageUpload.value = '';
-          // Di sini kamu akan menambahkan logika untuk mengirim gambar ke API jika API mendukungnya
-          // Ini sangat bergantung pada bagaimana API kamu menerima gambar.
         } else {
           imagePreview.src = '#';
           imagePreviewContainer.classList.add('hidden');
-        }
-      }
-
-      async function sendToChatbotAPI(message) {
-        appendMessage('bot', 'Sedang memproses...'); // Tampilkan pesan loading
-
-        try {
-          const response = await fetch(apiUrl, {
-            method: 'POST', // Sesuaikan dengan metode API kamu (GET/POST)
-            headers: {
-              'Content-Type': 'application/json', // Sesuaikan jika API kamu menerima format lain
-              'Authorization': `Bearer ${apiKey}` // Contoh otentikasi jika diperlukan
-              // Tambahkan header lain sesuai kebutuhan API kamu
-            },
-            body: JSON.stringify({ // Sesuaikan body sesuai kebutuhan API kamu
-              'text': message
-            })
-          });
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-
-          const data = await response.json();
-          console.log('Response from AI:', data);
-
-          // Hapus pesan loading
-          chatMessages.lastChild.remove();
-
-          // Sesuaikan ini berdasarkan struktur respons API kamu
-          const botResponse = data.response || data.result || 'Maaf, tidak ada jawaban.';
-          appendMessage('bot', botResponse);
-
-        } catch (error) {
-          console.error('Error sending message to AI:', error);
-          // Hapus pesan loading jika ada error
-          if (chatMessages.lastChild?.textContent === 'Sedang memproses...') {
-            chatMessages.lastChild.remove();
-          }
-          appendMessage('bot', 'Maaf, terjadi kesalahan saat menghubungi AI.');
         }
       }
     });
