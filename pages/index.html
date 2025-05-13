@@ -10,12 +10,124 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <style>
-    /* Styling tetap sama seperti sebelumnya */
-
+    #loading-screen {
+      transition: opacity 0.5s ease;
+    }
+    #loading-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    .chat-messages {
+      overflow-y: auto;
+      flex-grow: 1;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .message-container {
+      display: flex;
+      margin-bottom: 0.5rem;
+      align-items: flex-start;
+    }
+    .message {
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      clear: both;
+      word-break: break-word;
+    }
+    .user-message-container {
+      justify-content: flex-end;
+    }
+    .user-message {
+      background-color: #4CAF50;
+      color: #fff;
+      border-radius: 0.5rem 0 0.5rem 0.5rem;
+      margin-left: auto;
+      margin-right: 0.5rem;
+    }
+    .user-icon {
+      color: #4CAF50;
+      margin-left: 0.5rem;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+    }
+    .bot-message-container {
+      justify-content: flex-start;
+    }
+    .bot-message {
+      background-color: #2d3748;
+      color: #f7fafc;
+      border-radius: 0 0.5rem 0.5rem 0.5rem;
+      margin-right: auto;
+      margin-left: 0.5rem;
+    }
+    .bot-icon {
+      color: #a0aec0;
+      margin-right: 0.5rem;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+    }
+    .input-upload-area {
+      display: flex;
+      padding: 0.75rem 1rem;
+      border-top: 1px solid #2d3748;
+      align-items: center;
+      padding-bottom: max(0px, env(safe-area-inset-bottom) - 20px);
+      background-color: #181828;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      z-index: 10;
+    }
+    .chat-input {
+      flex-grow: 1;
+      padding: 0.75rem;
+      border: 1px solid #4a5568;
+      border-radius: 0.5rem;
+      background-color: #1a202c;
+      color: #edf2f7;
+      margin-right: 0.5rem;
+    }
+    .upload-button {
+      background-color: transparent;
+      color: #718096;
+      border: none;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: color 0.3s ease;
+      font-size: 1.5rem;
+    }
+    .upload-button:hover {
+      color: #a0aec0;
+    }
+    .send-button {
+      background-color: #667eea;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.25rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .send-button:hover {
+      background-color: #5a67d8;
+    }
+    .hidden {
+      display: none;
+    }
     #cancelPreview {
       position: absolute;
       top: 0.5rem;
-      right: 0.5rem; /* Menggerakkan tombol ke kanan */
+      right: 0.5rem;
       background-color: #4a5568;
       color: white;
       border: none;
@@ -28,48 +140,94 @@
       font-size: 0.8rem;
       cursor: pointer;
     }
-
-    /* Styling tambahan untuk memastikan elemen lain tetap bekerja */
-    .chat-messages {
-      overflow-y: auto;
-      flex-grow: 1;
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
+    .chat-messages::-webkit-scrollbar {
+      width: 0.5em;
     }
-
-    .message-container {
-      display: flex;
-      margin-bottom: 0.5rem;
-      align-items: flex-start;
+    .chat-messages::-webkit-scrollbar-thumb {
+      background-color: #4a5568;
+      border-radius: 0.25em;
     }
-
-    /* Pesan gambar */
-    .message-image {
-      max-width: 100%;
+    .chat-messages::-webkit-scrollbar-track {
+      background-color: #1a202c;
+    }
+    #imagePreviewContainer {
+      position: fixed;
+      bottom: calc(70px + max(0px, env(safe-area-inset-bottom) - 20px));
+      left: 0;
+      width: 100%;
+      background-color: #181828;
+      padding: 0.5rem;
+      border-top: 1px solid #2d3748;
+      z-index: 20;
+      display: none;
+      justify-content: center;
+    }
+    #imagePreview {
+      max-height: 150px;
+      max-width: 90%;
       border-radius: 0.5rem;
     }
   </style>
 </head>
 <body class="bg-[#0f0f1a] text-gray-100 font-[Poppins]">
-  <script src="https://kit.fontawesome.com/b4ed7c902a.js" crossorigin="anonymous"></script>
-
-  <!-- Bagian HTML tetap sama, hanya perlu menambahkan fungsi JS yang baru -->
-  <div class="input-upload-area">
-    <input type="file" id="imageUpload" class="hidden" accept="image/*">
-    <button id="uploadButton" class="upload-button" aria-label="Upload Gambar">
-      <i class="fas fa-image"></i>
-    </button>
-    <input type="text" id="chatInput" class="chat-input" placeholder="Ketik pesan...">
-    <button class="send-button" id="sendButton">Kirim</button>
+  <div id="loading-screen" class="fixed inset-0 bg-[#0f0f1a] flex items-center justify-center z-50">
+    <div class="text-center">
+      <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-white mx-auto mb-4"></div>
+      <p class="font-normal text-lg">Loading...</p>
+    </div>
   </div>
 
-  <div id="imagePreviewContainer">
-    <img id="imagePreview" src="#" alt="Pratinjau">
-    <button id="cancelPreview"><i class="fas fa-times"></i></button>
+  <div class="flex overflow-hidden">
+    <div id="sidebar" class="bg-[#181828] w-70 space-y-6 py-7 px-1 fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out overflow-y-auto z-20">
+      <a class="flex items-center space-x-2 px-4">
+        <img id="logo" src="" alt="Logo" class="h-8 w-8 rounded-lg" />
+        <span id="webtitle" class="text-[20px] text-gray-100 font-semibold">UBED AI</span>
+      </a>
+      <nav id="menu"></nav>
+    </div>
+
+    <div class="flex-1 flex flex-col chat-container">
+      <header class="flex justify-between items-center bg-[#181828] py-3 px-7 fixed w-full z-10">
+        <button id="menu-btn" class="text-2xl text-gray-100 focus:outline-none md:hidden">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div id="webtitle-header" class="flex text-center items-center font-semibold text-[20px] text-gray-100">UBED AI</div>
+      </header>
+
+      <a href="https://api.ubed.my.id" class="back-button" aria-label="Kembali ke Dokumentasi">
+        <i class="fas fa-lock"></i>
+      </a>
+
+      <main class="flex-1 overflow-x-hidden overflow-y-auto mt-[5rem] bg-[#0f0f1a] flex flex-col chat-main">
+        <div class="chat-messages" id="chatMessages"></div>
+      </main>
+
+      <div id="imagePreviewContainer">
+        <img id="imagePreview" src="#" alt="Pratinjau">
+        <button id="cancelPreview"><i class="fas fa-times"></i></button>
+      </div>
+
+      <div class="input-upload-area">
+        <input type="file" id="imageUpload" class="hidden" accept="image/*">
+        <button id="uploadButton" class="upload-button" aria-label="Upload Gambar">
+          <i class="fas fa-image"></i>
+        </button>
+        <input type="text" id="chatInput" class="chat-input" placeholder="Ketik pesan...">
+        <button class="send-button" id="sendButton">Kirim</button>
+      </div>
+    </div>
   </div>
+
+  <footer class="fixed bottom-0 right-0 left-0 bg-[#181828] text-s text-center py-4 text-gray-100"></footer>
 
   <script>
+    window.addEventListener("load", function () {
+      const loader = document.getElementById("loading-screen");
+      setTimeout(() => {
+        loader.classList.add("hidden");
+      }, 1500);
+    });
+
     document.addEventListener('DOMContentLoaded', () => {
       const chatMessages = document.getElementById('chatMessages');
       const chatInput = document.getElementById('chatInput');
@@ -83,7 +241,6 @@
       const apiUrl = 'https://api.ubed.my.id/ai/simi';
       const imageProcessingApi = 'https://api.ubed.my.id/maker/Jadi-Apa-Aja';
 
-      // Fungsi untuk menambahkan pesan ke tampilan chat
       function appendMessage(sender, message, isImage = false) {
         const messageContainer = document.createElement('div');
         messageContainer.classList.add('message-container');
@@ -110,7 +267,6 @@
         chatMessages.scrollTop = chatMessages.scrollHeight;
       }
 
-      // Fungsi untuk mengirim pesan teks ke API
       async function sendTextMessage(message) {
         appendMessage('user', message);
         appendMessage('bot', '💬...');
@@ -121,7 +277,7 @@
             throw new Error(`HTTP error! status: ${response.status}`);
           }
           const data = await response.json();
-          chatMessages.lastChild.remove(); // Hapus pesan "Sedang memproses..."
+          chatMessages.lastChild.remove();
           appendMessage('bot', data.result || 'Maaf, tidak ada jawaban.');
         } catch (error) {
           console.error('Error sending message to AI:', error);
@@ -129,7 +285,6 @@
         }
       }
 
-      // Fungsi untuk menangani upload gambar
       function handleImageUpload() {
         const file = imageUpload.files[0];
         if (file) {
@@ -137,8 +292,6 @@
           reader.onload = (e) => {
             const imageUrl = e.target.result;
             appendMessage('user', imageUrl, true);
-
-            // Menggunakan API untuk memproses gambar
             processImage(imageUrl);
           };
           reader.readAsDataURL(file);
@@ -146,14 +299,13 @@
         }
       }
 
-      // Fungsi untuk memproses gambar dengan API
       async function processImage(imageUrl) {
         const apiUrlWithParams = `${imageProcessingApi}?apikey=${apiKey}&imageUrl=${encodeURIComponent(imageUrl)}&text=Pakai+hijab`;
         try {
           const response = await fetch(apiUrlWithParams);
           const data = await response.json();
           if (data && data.result) {
-            appendMessage('bot', data.result, true); // Menampilkan gambar hasil API
+            appendMessage('bot', data.result, true);
           } else {
             appendMessage('bot', 'Gambar tidak dapat diproses.');
           }
@@ -163,7 +315,6 @@
         }
       }
 
-      // Event listener untuk tombol kirim
       sendButton.addEventListener('click', () => {
         const userMessage = chatInput.value.trim();
         if (userMessage) {
@@ -172,19 +323,16 @@
         }
       });
 
-      // Event listener untuk input file gambar
       uploadButton.addEventListener('click', () => {
         imageUpload.click();
       });
 
-      // Event listener untuk input file gambar
       imageUpload.addEventListener('change', handleImageUpload);
 
-      // Event listener untuk tombol batal pratinjau
       cancelPreviewButton.addEventListener('click', () => {
         imagePreview.src = '#';
         imagePreviewContainer.style.display = 'none';
-        imageUpload.value = ''; // Reset input file
+        imageUpload.value = '';
       });
     });
   </script>
