@@ -1,146 +1,232 @@
-
-<!DOCTYPE html>  <html lang="en">  
-<head>  
-  <meta charset="utf-8" />  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />  
-  <title id="pagetitle"></title>  
-  <script src="https://cdn.tailwindcss.com"></script>  
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />  
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet" />  
-  <link rel="preconnect" href="https://fonts.googleapis.com" />  
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />  
-  <style>  
-    #loading-screen {  
-      transition: opacity 0.5s ease;  
-    }  
-    #loading-screen.hidden {  
-      opacity: 0;  
-      visibility: hidden;  
-    }  
-  </style>  
-</head>  
-<body class="bg-[#0f0f1a] text-gray-100 font-[Poppins]">  
-  <script src="https://kit.fontawesome.com/b4ed7c902a.js" crossorigin="anonymous"></script>    <!-- Loading Screen -->    <div id="loading-screen" class="fixed inset-0 bg-[#0f0f1a] flex items-center justify-center z-50">  
-    <div class="text-center">  
-      <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-white mx-auto mb-4"></div>  
-      <p class="font-normal text-lg">Loading...</p>  
-    </div>  
-  </div>    <div class="flex overflow-hidden">  
-    <!-- Sidebar -->  
-    <div id="sidebar" class="bg-[#181828] w-70 space-y-6 py-7 px-1 fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out overflow-y-auto z-20">  
-      <a class="flex items-center space-x-2 px-4">  
-        <img id="logo" src="" alt="Logo" class="h-8 w-8 rounded-lg" />  
-        <span id="webtitle" class="text-[20px] text-gray-100 font-semibold"></span>  
-      </a>  
-      <nav class="transition-all duration-600 eass" id="menu"></nav>  
-    </div>  <!-- Content -->  
-<div class="flex-1 flex flex-col">  
-  <header class="flex justify-between items-center bg-[#181828] py-3 px-7 fixed w-full z-10">  
-    <button id="menu-btn" class="text-2xl text-gray-100 focus:outline-none md:hidden">  
-      <i class="fas fa-bars"></i>  
-    </button>  
-    <div id="webtitle" class="flex text-center items-center font-semibold text-[20px] text-gray-100"></div>  
-    <div class="flex items-center">  
-      <a id="profile-links" href="#"><img id="profile-pic" src="" alt="Profile" class="h-10 w-10 rounded-full" /></a>  
-    </div>  
-  </header>  
-
-  <main class="flex-1 overflow-x-hidden overflow-y-auto mt-[5rem] bg-[#0f0f1a]">  
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">  
-        <div class="bg-[#1f1f2e] p-6 rounded-2xl shadow-lg flex items-center transition-all duration-300">  
-          <i class="fa-solid fa-globe text-4xl text-blue-500 mr-4"></i>  
-          <div class="leading-[7px]">  
-            <h2 class="text-lg font-normal mb-2">Status Server</h2>  
-            <p id="total-request" class="flex items-center gap-1 font-normal">  
-              <i class="fa-solid fa-circle text-green-500 text-[8px] animate-pulse"></i>Active  
-            </p>  
-          </div>  
-        </div>  
-
-        <div class="bg-[#1f1f2e] p-6 rounded-2xl shadow-lg flex items-center transition-all duration-300">  
-          <i class="fas fa-battery-half text-4xl text-green-400 mr-4"></i>  
-          <div class="leading-[7px]">  
-            <h2 class="text-lg font-normal mb-2">Battery Status</h2>  
-            <p id="battery-status" class="font-normal text-[15px]">Fetching battery status...</p>  
-          </div>  
-        </div>  
-
-        <div class="bg-[#1f1f2e] p-6 rounded-2xl shadow-lg flex items-center transition-all duration-300">  
-          <i class="fa-solid fa-server text-4xl text-red-400 mr-4"></i>  
-          <div class="leading-[7px]">  
-            <h2 class="text-lg font-normal mb-2">IP Address</h2>  
-            <p id="ip-address" class="font-normal text-[15px]">Fetching IP address...</p>  
-          </div>  
-        </div>  
-
-        <!-- API Key Purchase Section -->  
-        <div class="bg-[#1f1f2e] p-6 rounded-2xl shadow-lg flex flex-col items-center transition-all duration-300">  
-          <h2 class="text-lg font-normal mb-2">Beli API Key</h2>  
-          <p class="font-normal text-[15px] mb-4">Web RestApi Tergokil, Akan selalu update setiap dan fix Error setiap hari.</p>  
-          <div class="flex gap-4">  
-            <a href="/dokumentasi" class="bg-green-500 text-white px-6 py-2 rounded-full hover:bg-green-400">Dokumentasi Api</a>
-          </div>  
-        </div>  
-        
-            <div class="container mx-auto px-6 py-6">  
-<div class="mt-10 bg-[#1f1f2e] p-6 rounded-2xl shadow-lg">
-  <h2 class="text-xl font-semibold mb-4 text-white">Harga API Key</h2>
-  <ul class="space-y-4">
-    <li class="flex justify-between items-center">
-      <span>1 Bulan = <strong>IDR 10.000</strong></span>
-      <a href="https://wa.me/6285147777105" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-xl text-sm">Get</a>
-    </li>
-    <li class="flex justify-between items-center">
-      <span>2 Bulan = <strong>IDR 17.000</strong></span>
-      <a href="https://wa.me/6285147777105" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-xl text-sm">Get</a>
-    </li>
-    <li class="flex justify-between items-center">
-      <span>6 Bulan = <strong>IDR 40.000</strong></span>
-      <a href="https://wa.me/6285147777105" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-xl text-sm">Get</a>
-    </li>
-  </ul>
-
-  <div class="mt-6 text-sm text-gray-300">
-    <p>Gunakan Apikey Gratis <code class="bg-gray-700 px-2 py-1 rounded">free1</code> untuk mengakses fitur API sampai dengan tanggal <strong>30 Mei 2025</strong>.</p>
-    <a href="https://wa.me/6285147777105" target="_blank" class="inline-block mt-4 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium">Hubungi Owner</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="pagetitle">Chat AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <style>
+    #loading-screen {
+      transition: opacity 0.5s ease;
+    }
+    #loading-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .chat-messages {
+      overflow-y: auto;
+      flex-grow: 1;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .message {
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      margin-bottom: 0.5rem;
+      clear: both;
+    }
+    .user {
+      background-color: #4a5568; /* Gray-600 */
+      color: #edf2f7; /* Gray-200 */
+      align-self: flex-end;
+    }
+    .bot {
+      background-color: #2d3748; /* Gray-800 */
+      color: #f7fafc; /* Gray-100 */
+      align-self: flex-start;
+    }
+    .chat-input-area {
+      display: flex;
+      padding: 1rem;
+      border-top: 1px solid #2d3748; /* Gray-800 */
+    }
+    .chat-input {
+      flex-grow: 1;
+      padding: 0.75rem;
+      border: 1px solid #4a5568; /* Gray-600 */
+      border-radius: 0.5rem;
+      margin-right: 0.75rem;
+      background-color: #1a202c; /* Gray-900 */
+      color: #edf2f7; /* Gray-200 */
+    }
+    .send-button {
+      background-color: #667eea; /* Indigo-400 */
+      color: white;
+      border: none;
+      padding: 0.75rem 1.25rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .send-button:hover {
+      background-color: #5a67d8; /* Indigo-500 */
+    }
+  </style>
+</head>
+<body class="bg-[#0f0f1a] text-gray-100 font-[Poppins]">
+  <script src="https://kit.fontawesome.com/b4ed7c902a.js" crossorigin="anonymous"></script>
+  <div id="loading-screen" class="fixed inset-0 bg-[#0f0f1a] flex items-center justify-center z-50">
+    <div class="text-center">
+      <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-white mx-auto mb-4"></div>
+      <p class="font-normal text-lg">Loading...</p>
+    </div>
   </div>
- </div>
-</div>
+  <div class="flex overflow-hidden">
+    <div id="sidebar" class="bg-[#181828] w-70 space-y-6 py-7 px-1 fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out overflow-y-auto z-20">
+      <a class="flex items-center space-x-2 px-4">
+        <img id="logo" src="" alt="Logo" class="h-8 w-8 rounded-lg" />
+        <span id="webtitle" class="text-[20px] text-gray-100 font-semibold">Chat AI</span>
+      </a>
+      <nav class="transition-all duration-600 eass" id="menu">
+        </nav>
+    </div>
+    <div class="flex-1 flex flex-col">
+      <header class="flex justify-between items-center bg-[#181828] py-3 px-7 fixed w-full z-10">
+        <button id="menu-btn" class="text-2xl text-gray-100 focus:outline-none md:hidden">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div id="webtitle-header" class="flex text-center items-center font-semibold text-[20px] text-gray-100">Chat AI</div>
+        <div class="flex items-center">
+          </div>
+      </header>
 
+      <main class="flex-1 overflow-x-hidden overflow-y-auto mt-[5rem] bg-[#0f0f1a] flex flex-col">
+        <div class="chat-messages" id="chatMessages">
+          </div>
+        <div class="chat-input-area">
+          <input type="text" id="chatInput" class="chat-input" placeholder="Ketik pesan...">
+          <button class="send-button" id="sendButton">Kirim</button>
+        </div>
+        <div class="chat-input-area items-center">
+          <input type="file" id="imageUpload" class="hidden" accept="image/*">
+          <button id="uploadButton" class="bg-gray-700 text-white px-4 py-2 rounded-md mr-2">
+            <i class="fas fa-image mr-2"></i>Upload Gambar
+          </button>
+          <div id="imagePreviewContainer" class="mt-2 hidden">
+            <img id="imagePreview" class="max-h-32 rounded-md" src="#" alt="Pratinjau Gambar">
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
 
-        <div class="bg-[#1f1f2e] p-6 rounded-2xl shadow-lg flex items-center transition-all duration-300">  
-          <div class="leading-[7px]">  
-            <h2 class="text-lg mb-2">Developer Kontributor :</h2>  
-            <p id="tqto" class="leading-tight font-normal text-[15px]">Fetching data developer...</p>  
-          </div>  
-        </div>  
-      </div>  
+  <footer class="fixed bottom-0 right-0 left-0 bg-[#181828] text-s text-center py-4 text-gray-100">
+    </footer>
 
-      <!-- Banner and Button Section -->  
-      <div class="mt-10 flex flex-col items-center">  
-        <img src="https://files.catbox.moe/9bzxxw.jpg" alt="Ubed Bot" class="rounded-2xl shadow-lg w-full max-w-3xl mb-4" />  
-        <a href="https://chat.whatsapp.com/EfPjvlM7WIkBTfE5C2mNG1" target="_blank">  
-          <button class="bg-blue-600 hover:bg-blue-500 text-white font-medium py-2 px-6 rounded-full shadow-md">  
-            Menuju Ubed Bot  
-          </button>  
-        </a>  
-      </div>  
+  <script>
+    window.addEventListener("load", function () {
+      const loader = document.getElementById("loading-screen");
+      setTimeout(() => {
+        loader.classList.add("hidden");
+      }, 1500);
+    });
 
-    </div>  
-  </main>  
-</div>
+    document.addEventListener('DOMContentLoaded', () => {
+      const chatMessages = document.getElementById('chatMessages');
+      const chatInput = document.getElementById('chatInput');
+      const sendButton = document.getElementById('sendButton');
+      const uploadButton = document.getElementById('uploadButton');
+      const imageUpload = document.getElementById('imageUpload');
+      const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+      const imagePreview = document.getElementById('imagePreview');
+      const apiKey = 'YOUR_API_KEY'; // Ganti dengan API key kamu
+      const apiUrl = 'YOUR_API_ENDPOINT'; // Ganti dengan endpoint API kamu
 
-  </div>    <div id="tqto" class="font-normal m-6 leading-normal"></div>  
-  <div id="otherlinks" class="m-7 text-blue-400 hover:text-blue-600 text-left font-normal">  
-    <a class="hover:underline text-xs mb-8" href="#">Contact Developer.</a>  
-    <p><a class="hover:underline mt-8 text-xs" href="#">Join Channel WhatsApp</a>  
-        <p><a class="hover:underline mt-8 text-xs" href="https://www.luxzoffc.web.id">Sosial Media</a></p>  
-  </div>    <!-- Footer -->    <footer class="fixed bottom-0 right-0 left-0 bg-[#181828] text-s text-center py-4 text-gray-100"></footer>    <script src="pages/script.js"></script>    <script>  
-    window.addEventListener("load", function () {  
-      const loader = document.getElementById("loading-screen");  
-      setTimeout(() => {  
-        loader.classList.add("hidden");  
-      }, 1500);  
-    });  
-  </script>  </body>  
+      function appendMessage(sender, message) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', sender);
+        messageDiv.textContent = message;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      function sendMessage() {
+        const userMessage = chatInput.value.trim();
+        if (userMessage) {
+          appendMessage('user', userMessage);
+          chatInput.value = '';
+          sendToChatbotAPI(userMessage);
+        }
+      }
+
+      sendButton.addEventListener('click', sendMessage);
+      chatInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+          event.preventDefault();
+          sendMessage();
+        }
+      });
+
+      uploadButton.addEventListener('click', () => {
+        imageUpload.click(); // Memicu klik pada input file yang tersembunyi
+      });
+
+      imageUpload.addEventListener('change', handleImageUpload);
+
+      function handleImageUpload() {
+        const file = imageUpload.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            imagePreview.src = e.target.result;
+            imagePreviewContainer.classList.remove('hidden');
+          };
+          reader.readAsDataURL(file);
+          appendMessage('user', `Mengirim gambar: ${file.name}`);
+          imageUpload.value = '';
+          // Di sini kamu akan menambahkan logika untuk mengirim gambar ke API jika API mendukungnya
+          // Ini sangat bergantung pada bagaimana API kamu menerima gambar.
+        } else {
+          imagePreview.src = '#';
+          imagePreviewContainer.classList.add('hidden');
+        }
+      }
+
+      async function sendToChatbotAPI(message) {
+        appendMessage('bot', 'Sedang memproses...'); // Tampilkan pesan loading
+
+        try {
+          const response = await fetch(apiUrl, {
+            method: 'POST', // Sesuaikan dengan metode API kamu (GET/POST)
+            headers: {
+              'Content-Type': 'application/json', // Sesuaikan jika API kamu menerima format lain
+              'Authorization': `Bearer ${apiKey}` // Contoh otentikasi jika diperlukan
+              // Tambahkan header lain sesuai kebutuhan API kamu
+            },
+            body: JSON.stringify({ // Sesuaikan body sesuai kebutuhan API kamu
+              'text': message
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          console.log('Response from AI:', data);
+
+          // Hapus pesan loading
+          chatMessages.lastChild.remove();
+
+          // Sesuaikan ini berdasarkan struktur respons API kamu
+          const botResponse = data.response || data.result || 'Maaf, tidak ada jawaban.';
+          appendMessage('bot', botResponse);
+
+        } catch (error) {
+          console.error('Error sending message to AI:', error);
+          // Hapus pesan loading jika ada error
+          if (chatMessages.lastChild?.textContent === 'Sedang memproses...') {
+            chatMessages.lastChild.remove();
+          }
+          appendMessage('bot', 'Maaf, terjadi kesalahan saat menghubungi AI.');
+        }
+      }
+    });
+  </script>
+</body>
 </html>
