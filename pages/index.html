@@ -128,7 +128,7 @@
     .back-button {
       position: fixed;
       top: 1rem;
-      right: 1rem; /* Pindahkan ke kanan */
+      left: 1rem;
       background-color: rgba(30, 41, 59, 0.8); /* Gray-800 dengan transparansi */
       color: white;
       border: none;
@@ -188,12 +188,6 @@
       font-size: 0.8rem;
       cursor: pointer;
     }
-    .max-h-48 {
-      max-height: 12rem; /* Tailwind max-h-48 */
-    }
-    .rounded-md {
-      border-radius: 0.375rem; /* Tailwind rounded-md */
-    }
   </style>
 </head>
 <body class="bg-[#0f0f1a] text-gray-100 font-[Poppins]">
@@ -219,10 +213,13 @@
           <i class="fas fa-bars"></i>
         </button>
         <div id="webtitle-header" class="flex text-center items-center font-semibold text-[20px] text-gray-100">UBED AI</div>
-        <a href="https://api.ubed.my.id" class="back-button" aria-label="Kembali ke Dokumentasi">
-          <i class="fas fa-lock"></i>
-        </a>
+        <div class="flex items-center">
+          </div>
       </header>
+
+      <a href="https://api.ubed.my.id" class="back-button" aria-label="Kembali ke Dokumentasi">
+        <i class="fas fa-lock"></i>
+      </a>
 
       <main class="flex-1 overflow-x-hidden overflow-y-auto mt-[5rem] bg-[#0f0f1a] flex flex-col chat-main">
         <div class="chat-messages" id="chatMessages">
@@ -266,24 +263,15 @@
       const imagePreview = document.getElementById('imagePreview');
       const cancelPreviewButton = document.getElementById('cancelPreview');
       const apiKey = 'ubed2407';
-      const apiUrlSimi = 'https://api.ubed.my.id/ai/simi';
-      const apiUrlMaker = 'https://api.ubed.my.id/maker/Jadi-Apa-Aja';
+      const apiUrl = 'https://api.ubed.my.id/ai/simi';
 
       // Fungsi untuk menambahkan pesan ke tampilan chat
-      function appendMessage(sender, message, isImage = false) {
+      function appendMessage(sender, message) {
         const messageContainer = document.createElement('div');
         messageContainer.classList.add('message-container');
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message');
-
-        if (isImage) {
-          const imageElement = document.createElement('img');
-          imageElement.src = message;
-          imageElement.classList.add('max-h-48', 'rounded-md');
-          messageDiv.appendChild(imageElement);
-        } else {
-          messageDiv.textContent = message;
-        }
+        messageDiv.textContent = message;
 
         if (sender === 'user') {
           messageContainer.classList.add('user-message-container');
@@ -291,7 +279,7 @@
           const userIcon = document.createElement('i');
           userIcon.classList.add('fas', 'fa-user-circle', 'user-icon');
           const chatBubbleIcon = document.createElement('i');
-          chatBubbleIcon.classList.add('fas', 'fa-comment', 'user-icon', 'ml-1');
+          chatBubbleIcon.classList.add('fas', 'fa-comment', 'user-icon', 'ml-1'); // Tambahkan margin kiri
           messageContainer.appendChild(messageDiv);
           messageContainer.appendChild(userIcon);
           messageContainer.appendChild(chatBubbleIcon);
@@ -313,7 +301,7 @@
         appendMessage('bot', '💬...');
 
         try {
-          const response = await fetch(`${apiUrlSimi}?apikey=${apiKey}&text=${encodeURIComponent(message)}`);
+          const response = await fetch(`${apiUrl}?apikey=${apiKey}&text=${encodeURIComponent(message)}`);
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
@@ -323,58 +311,6 @@
         } catch (error) {
           console.error('Error sending message to AI:', error);
           chatMessages.lastChild.textContent = 'Maaf, terjadi kesalahan saat menghubungi AI.';
-        }
-      }
-
-      // Fungsi untuk mengirim gambar ke API Maker
-      async function sendImageToMaker(imageDataUrl, textPrompt) {
-        appendMessage('user', '[Gambar sedang diubah...]');
-
-        try {
-          const imageUrl = imageDataUrl; // Gunakan Data URL langsung
-          const makerApiUrl = `${apiUrlMaker}?apikey=${apiKey}&imageUrl=${encodeURIComponent(imageUrl)}&text=${encodeURIComponent(textPrompt)}`;
-          const response = await fetch(makerApiUrl);
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-
-          const blob = await response.blob();
-          const objectUrl = URL.createObjectURL(blob);
-          // Hapus pesan "[Gambar sedang diubah...]"
-          chatMessages.lastChild.remove();
-          appendMessage('bot', objectUrl, true); // Tampilkan sebagai gambar
-        } catch (error) {
-          console.error('Error sending image to Maker API:', error);
-          chatMessages.lastChild.textContent = 'Maaf, gagal mengubah gambar.';
-        }
-      }
-
-      // Fungsi untuk menangani upload gambar
-      function
-      function handleImageUpload() {
-        const file = imageUpload.files?.[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            imagePreview.src = reader.result;
-            imagePreviewContainer.style.display = 'flex';
-
-            // Kirim gambar ke API Maker dengan prompt default
-            sendImageToMaker(reader.result, 'Jadi apa aja');
-
-            // Tampilkan gambar asli di chat pengguna
-            appendMessage('user', reader.result, true);
-
-            // Reset input dan pratinjau
-            imageUpload.value = '';
-            imagePreview.src = '#';
-            imagePreviewContainer.style.display = 'none';
-          };
-          reader.readAsDataURL(file);
-        } else {
-          imagePreview.src = '#';
-          imagePreviewContainer.style.display = 'none';
         }
       }
 
@@ -409,6 +345,24 @@
         imagePreviewContainer.style.display = 'none';
         imageUpload.value = ''; // Reset input file
       });
+
+      // Fungsi untuk menangani upload gambar (hanya pratinjau saat ini)
+      function handleImageUpload() {
+        const file = imageUpload.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            imagePreview.src = e.target.result;
+            imagePreviewContainer.style.display = 'flex';
+          };
+          reader.readAsDataURL(file);
+          appendMessage('user', `Mengirim gambar: ${file.name} (belum didukung API)`);
+          // Jangan reset imageUpload.value di sini agar pratinjau tetap ada sampai dibatalkan
+        } else {
+          imagePreview.src = '#';
+          imagePreviewContainer.style.display = 'none';
+        }
+      }
     });
   </script>
 </body>
