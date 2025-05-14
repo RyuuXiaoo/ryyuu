@@ -191,6 +191,40 @@
       font-size: 0.8rem;
       cursor: pointer;
     }
+    #typing-indicator {
+      display: inline-block; /* Agar sejajar dengan ikon */
+      margin-left: 0.5rem; /* Beri jarak dari ikon */
+    }
+
+    #typing-indicator span {
+      display: inline-block;
+      width: 0.4em;
+      height: 0.4em;
+      border-radius: 50%;
+      background-color: #a0aec0; /* Warna titik abu-abu */
+      margin-right: 0.2em;
+      animation: wave 1.5s infinite;
+    }
+
+    #typing-indicator span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    #typing-indicator span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes wave {
+      0% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-0.3em);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
   </style>
 </head>
 <body class="bg-[#0f0f1a] text-gray-100 font-[Poppins]">
@@ -276,9 +310,9 @@
         if (imageUrl) {
           const img = document.createElement('img');
           img.src = imageUrl;
-          img.classList.add('max-h-40', 'rounded-md'); // Tambahkan class Tailwind untuk styling
-          messageDiv.appendChild(document.createTextNode(message)); // Tampilkan teks di atas gambar
-          messageDiv.appendChild(document.createElement('br')); // Tambahkan baris baru
+          img.classList.add('max-h-40', 'rounded-md');
+          messageDiv.appendChild(document.createTextNode(message));
+          messageDiv.appendChild(document.createElement('br'));
           messageDiv.appendChild(img);
         } else {
           messageDiv.textContent = message;
@@ -299,6 +333,13 @@
           messageDiv.classList.add('bot-message');
           const botIcon = document.createElement('i');
           botIcon.classList.add('fas', 'fa-robot', 'bot-icon');
+
+          // Tambahkan elemen untuk typing indicator
+          const typingIndicator = document.createElement('div');
+          typingIndicator.id = 'typing-indicator';
+          typingIndicator.innerHTML = '<span>.</span><span>.</span><span>.</span>';
+          messageDiv.appendChild(typingIndicator);
+
           messageContainer.appendChild(botIcon);
           messageContainer.appendChild(messageDiv);
         }
@@ -309,7 +350,7 @@
       // Fungsi untuk mengirim pesan teks ke API
       async function sendTextMessage(message) {
         appendMessage('user', message);
-        appendMessage('bot', '💬...');
+        appendBotTypingIndicator(); // Tampilkan indikator mengetik
 
         try {
           const response = await fetch(`${apiUrl}?apikey=${apiKey}&text=${encodeURIComponent(message)}`);
@@ -317,17 +358,79 @@
             throw new Error(`HTTP error! status: ${response.status}`);
           }
           const data = await response.json();
-          chatMessages.lastChild.remove(); // Hapus pesan "Sedang memproses..."
-          appendMessage('bot', data.result || 'Maaf, tidak ada jawaban.');
+          removeBotTypingIndicator(); // Hapus indikator mengetik
+          animateBotMessage(data.result || 'Maaf, tidak ada jawaban.'); // Animasikan teks bot
         } catch (error) {
           console.error('Error sending message to AI:', error);
-          chatMessages.lastChild.textContent = 'Maaf, terjadi kesalahan saat menghubungi AI.';
+          removeBotTypingIndicator(); // Pastikan indikator dihapus jika ada error
+          appendMessage('bot', 'Maaf, terjadi kesalahan saat menghubungi AI.');
+        }
+      }
+
+      // Fungsi untuk menampilkan animasi typing indicator pada pesan bot terakhir
+      function appendBotTypingIndicator() {
+        const lastBotMessageContainer = chatMessages.lastElementChild;
+        if (lastBotMessageContainer && lastBotMessageContainer.classList.contains('bot-message-container')) {
+          const messageDiv = lastBotMessageContainer.querySelector('.bot-message');
+          if (messageDiv && !messageDiv.querySelector('#typing-indicator')) {
+            const typingIndicator = document.createElement('div');
+            typingIndicator.id = 'typing-indicator';
+            typingIndicator.innerHTML = '<span>.</span><span>.</span><span>.</span>';
+            messageDiv.appendChild(typingIndicator);
+          }
+        } else {
+          // Jika tidak ada pesan bot, buat pesan baru dengan typing indicator
+          const messageContainer = document.createElement('div');
+          messageContainer.classList.add('bot-message-container');
+          const messageDiv = document.createElement('div');
+          messageDiv.classList.add('bot-message');
+          const botIcon = document.createElement('i');
+          botIcon.classList.add('fas', 'fa-robot', 'bot-icon');
+          const typingIndicator = document.createElement('div');
+          typingIndicator.id = 'typing-indicator';
+          typingIndicator.innerHTML = '<span>.</span><span>.</span><span>.</span>';
+          messageDiv.appendChild(typingIndicator);
+          messageContainer.appendChild(botIcon);
+          messageContainer.appendChild(messageDiv);
+          chatMessages.appendChild(messageContainer);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+      }
+
+      // Fungsi untuk menghapus animasi typing indicator pada pesan bot terakhir
+      function removeBotTypingIndicator() {
+        const lastBotMessageContainer = chatMessages.lastElementChild;
+        if (lastBotMessageContainer && lastBotMessageContainer.classList.contains('bot-message-container')) {
+          const messageDiv = lastBotMessageContainer.querySelector('.bot-message');
+          if (messageDiv && messageDiv.querySelector('#typing-indicator')) {
+            messageDiv.removeChild(messageDiv.querySelector('#typing-indicator'));
+          }
+        }
+      }
+
+      // Fungsi untuk menampilkan animasi teks bot satu per satu
+      function animateBotMessage(text) {
+        const lastBotMessageContainer = chatMessages.lastElementChild;
+        if (lastBotMessageContainer && lastBotMessageContainer.classList.contains('bot-message-container')) {
+          const messageDiv = lastBotMessageContainer.querySelector('.bot-message');
+          if (messageDiv) {
+            messageDiv.textContent = ''; // Kosongkan teks awal
+            let index = 0;
+            function typeWriter() {
+              if (index < text.length) {
+                messageDiv.textContent += text.charAt(index);
+                index++;
+                setTimeout(typeWriter, 50); // Atur kecepatan munculnya huruf (ms)
+              }
+            }
+            typeWriter();
+          }
         }
       }
 
       // Fungsi untuk mengirim gambar ke API
       async function sendImageToAPI(imageFile) {
-        appendMessage('bot', 'Sedang memproses gambar...');
+        appendBotTypingIndicator(); // Tampilkan indikator mengetik
 
         try {
           const formData = new FormData();
@@ -346,12 +449,15 @@
 
           const blob = await response.blob();
           const imageObjectURL = URL.createObjectURL(blob);
-          chatMessages.lastChild.remove(); // Hapus pesan "Sedang memproses gambar..."
-          appendMessage('bot', 'Ini hasilnya:', imageObjectURL);
-
+          removeBotTypingIndicator(); // Hapus indikator mengetik
+          const botResponseMessage = 'Ini hasilnya:';
+          appendMessage('bot', botResponseMessage, imageObjectURL); // Tampilkan teks statis sebelum gambar
+          // Tidak perlu animasi teks satu per satu untuk pesan dengan gambar,
+          // atau kamu bisa menyesuaikannya jika ingin menganimasikan teks "Ini hasilnya:"
         } catch (error) {
           console.error('Error sending image to AI:', error);
-          chatMessages.lastChild.textContent = 'Maaf, terjadi kesalahan saat memproses gambar.';
+          removeBotTypingIndicator(); // Pastikan indikator dihapus jika ada error
+          appendMessage('bot', 'Maaf, terjadi kesalahan saat memproses gambar.');
         }
       }
 
