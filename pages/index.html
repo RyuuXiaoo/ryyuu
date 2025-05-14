@@ -246,6 +246,15 @@
       <p class="font-normal text-lg">Loading...</p>
     </div>
   </div>
+  <div id="welcome-overlay" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-40">
+    <div class="bg-[#181828] text-center p-8 rounded-md shadow-lg">
+      <p class="text-xl text-gray-100 font-semibold mb-4">Selamat datang di Ubed AI!</p>
+      <p class="text-gray-300">Mulai hari Anda dengan semangat.</p>
+      <p class="text-gray-300 mb-4">Ubed siap membantu Anda melakukan apa pun.</p>
+      <p class="text-gray-300">Perlu bantuan tentang Ubed Bot atau Ubed API?</p>
+      <p class="text-gray-300">Tanyakan saja, saya bisa membimbing Anda.</p>
+    </div>
+  </div>
   <div class="flex overflow-hidden">
     <div id="sidebar" class="bg-[#181828] w-70 space-y-6 py-7 px-1 fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition duration-200 ease-in-out overflow-y-auto z-20">
       <a class="flex items-center space-x-2 px-4">
@@ -260,7 +269,8 @@
         <button id="menu-btn" class="text-2xl text-gray-100 focus:outline-none md:hidden">
           <i class="fas fa-bars"></i>
         </button>
-        <div id="webtitle-header" class="flex text-center items-center font-semibold text-[20px] text-gray-100">UBED AI</div>
+        <div id="webtitle-header" class="flex text-center items-center font-semibold text-[20px] text-gray
+        -100">UBED AI</div>
         <div class="flex items-center">
           <a href="wa.me/6285147777105" class="bg-rgba(30, 41, 59, 0.8) text-white border-none padding-0.5rem-0.75rem border-radius-0.25rem cursor-pointer font-size-0.8rem z-30 mr-2" aria-label="WhatsApp">
             <i class="fab fa-whatsapp"></i>
@@ -311,21 +321,27 @@
         const imageUpload = document.getElementById('imageUpload');
         const imagePreviewContainer = document.getElementById('imagePreviewContainer');
         const imagePreview = document.getElementById('imagePreview');
-        const cancelPreviewButton = document.getElementById('cancelPreview');
-        const refreshButton = document.getElementById('refreshButton'); // Tambahkan variabel untuk tombol refresh
-        const apiKey = 'ubed2407';
-        const apiUrl = 'https://api.ubed.my.id/ai/simi';
-        const imageApiUrl = 'https://api.ubed.my.id/maker/Jadi-Apa-Aja';
-        let uploadedImageFile = null; // Variabel untuk menyimpan file gambar yang diunggah
+        const cancelButton = document.getElementById('cancelPreview');
+        const refreshButton = document.getElementById('refreshButton');
+        const welcomeOverlay = document.getElementById('welcome-overlay');
+        let uploadedImageFile = null;
 
-        // Pesan sambutan bot yang diperbaiki
-        const welcomeMessage = "Selamat datang di Ubed AI! Mulai hari Anda dengan semangat. Ubed siap membantu Anda melakukan apa pun. Perlu bantuan tentang Ubed Bot atau Ubed API? Tanyakan saja, saya bisa membimbing Anda.";
+        // Fungsi untuk menyembunyikan pesan sambutan
+        function hideWelcomeMessage() {
+          if (welcomeOverlay) {
+            welcomeOverlay.style.display = 'none';
+          }
+          // Hapus event listener agar tidak terus berjalan
+          chatInput.removeEventListener('input', hideWelcomeMessage);
+          sendButton.removeEventListener('click', hideWelcomeMessage);
+        }
 
-        // Tambahkan pesan sambutan bot saat halaman dimuat dengan flag isWelcome: true
-        appendMessage('bot', welcomeMessage, null, true);
+        // Tambahkan event listener untuk menyembunyikan pesan sambutan saat input berubah atau tombol kirim diklik
+        chatInput.addEventListener('input', hideWelcomeMessage, { once: true });
+        sendButton.addEventListener('click', hideWelcomeMessage, { once: true });
 
         // Fungsi untuk menambahkan pesan ke tampilan chat
-        function appendMessage(sender, message, imageUrl = null, isWelcome = false) {
+        function appendMessage(sender, message, imageUrl = null) {
           const messageContainer = document.createElement('div');
           messageContainer.classList.add('message-container');
           const messageDiv = document.createElement('div');
@@ -335,8 +351,7 @@
             const img = document.createElement('img');
             img.src = imageUrl;
             img.classList.add('max-h-40', 'rounded-md');
-            messageDiv.appendChild(document.createTextNode
-(message));
+            messageDiv.appendChild(document.createTextNode(message));
             messageDiv.appendChild(document.createElement('br'));
             messageDiv.appendChild(img);
           } else {
@@ -359,14 +374,6 @@
             messageDiv.classList.add('bot-message');
             const botIcon = document.createElement('i');
             botIcon.classList.add('fas', 'fa-robot', 'bot-icon');
-
-            if (!isWelcome) { // Tambahkan animasi mengetik hanya jika bukan pesan sambutan
-              const typingIndicator = document.createElement('div');
-              typingIndicator.id = 'typing-indicator';
-              typingIndicator.innerHTML = '<span>.</span><span>.</span><span>.</span>';
-              messageDiv.appendChild(typingIndicator);
-            }
-
             messageContainer.appendChild(botIcon);
             messageContainer.appendChild(messageDiv);
           }
@@ -389,105 +396,6 @@
             animateBotMessage(data.result || 'Maaf, tidak ada jawaban.'); // Animasikan teks bot
           } catch (error) {
             console.error('Error sending message to AI:', error);
-            removeBotTypingIndicator(); // Pastikan indikator dihapus jika ada error
-            appendMessage('bot', 'Maaf, terjadi kesalahan saat menghubungi AI.');
-          }
-        }
-
-        // Fungsi untuk menampilkan animasi typing indicator pada pesan bot terakhir
-        function appendBotTypingIndicator() {
-          const lastBotMessageContainer = chatMessages.lastElementChild;
-          if (lastBotMessageContainer && lastBotMessageContainer.classList.contains('bot-message-container')) {
-            const messageDiv = lastBotMessageContainer.querySelector('.bot-message');
-            if (messageDiv && !messageDiv.querySelector('#typing-indicator')) {
-              messageDiv.classList.add('bot-typing'); // Tambahkan class bot-typing
-              const typingIndicator = document.createElement('div');
-              typingIndicator.id = 'typing-indicator';
-              typingIndicator.innerHTML = '<span>.</span><span>.</span><span>.</span>';
-              messageDiv.appendChild(typingIndicator);
-            }
-          } else {
-            // Jika tidak ada pesan bot, buat pesan baru dengan typing indicator
-            const messageContainer = document.createElement('div');
-            messageContainer.classList.add('bot-message-container');
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('bot-message', 'bot-typing'); // Tambahkan class bot-typing
-            const botIcon = document.createElement('i');
-            botIcon.classList.add('fas', 'fa-robot', 'bot-icon');
-            const typingIndicator = document.createElement('div');
-            typingIndicator.id = 'typing-indicator';
-            typingIndicator.innerHTML = '<span>.</span><span>.</span><span>.</span>';
-            messageDiv.appendChild(typingIndicator);
-            messageContainer.appendChild(botIcon);
-            messageContainer.appendChild(messageDiv);
-            chatMessages.appendChild(messageContainer);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-          }
-        }
-
-        // Fungsi untuk menghapus animasi typing indicator pada pesan bot terakhir
-        function removeBotTypingIndicator() {
-          const lastBotMessageContainer = chatMessages.lastElementChild;
-          if (lastBotMessageContainer && lastBotMessageContainer.classList.contains('bot-message-container')) {
-            const messageDiv = lastBotMessageContainer.querySelector('.bot-message');
-            if (messageDiv) {
-              messageDiv.classList.remove('bot-typing'); // Hapus class bot-typing
-              const typingIndicator = messageDiv.querySelector('#typing-indicator');
-              if (typingIndicator) {
-                messageDiv.removeChild(typingIndicator);
-              }
-            }
-          }
-        }
-
-        // Fungsi untuk menampilkan animasi teks bot satu per satu
-        function animateBotMessage(text) {
-          const lastBotMessageContainer = chatMessages.lastElementChild;
-          if (lastBotMessageContainer && lastBotMessageContainer.classList.contains('bot-message-container')) {
-            const messageDiv = lastBotMessageContainer.querySelector('.bot-message');
-            if (messageDiv) {
-              messageDiv.textContent = ''; // Kosongkan teks awal
-              let index = 0;
-              function typeWriter() {
-                if (index < text.length) {
-                  messageDiv.textContent += text.charAt(index);
-                  index++;
-                  setTimeout(typeWriter, 50); // Atur kecepatan munculnya huruf (ms)
-                }
-              }
-              typeWriter();
-            }
-          }
-        }
-
-        // Fungsi untuk mengirim gambar ke API
-        async function sendImageToAPI(imageFile) {
-          appendBotTypingIndicator(); // Tampilkan indikator mengetik
-
-          try {
-            const formData = new FormData();
-            formData.append('imageUrl', await convertImageToBase64(imageFile));
-            formData.append('text', 'Pakai hijab');
-            formData.append('apikey', apiKey);
-
-            const response = await fetch(imageApiUrl, {
-              method: 'POST',
-              body: formData,
-            });
-
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const blob = await response.blob();
-            const imageObjectURL = URL.createObjectURL(blob);
-            removeBotTypingIndicator(); // Hapus indikator mengetik
-            const botResponseMessage = 'Ini hasilnya:';
-            appendMessage('bot', botResponseMessage, imageObjectURL); // Tampilkan teks statis sebelum gambar
-            // Tidak perlu animasi teks satu per satu untuk pesan dengan gambar,
-            // atau kamu bisa menyesuaikannya jika ingin menganimasikan teks "Ini hasilnya:"
-          } catch (error) {
-            console.error('Error sending image to AI:', error);
             removeBotTypingIndicator(); // Pastikan indikator dihapus jika ada error
             appendMessage('bot', 'Maaf, terjadi kesalahan saat menghubungi AI.');
           }
@@ -641,7 +549,7 @@
         imageUpload.addEventListener('change', handleImageUpload);
 
         // Event listener untuk tombol batal pratinjau
-        cancelPreviewButton.addEventListener('click', () => {
+        cancelButton.addEventListener('click', () => {
           imagePreview.src = '#';
           imagePreviewContainer.style.display = 'none';
           imageUpload.value = ''; // Reset input file
