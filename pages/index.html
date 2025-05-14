@@ -314,7 +314,7 @@
         const cancelPreviewButton = document.getElementById('cancelPreview');
         const refreshButton = document.getElementById('refreshButton'); // Tambahkan variabel untuk tombol refresh
         const apiKey = 'ubed2407';
-        const apiUrl = 'https://api.ubed.my.id/ai/simi';
+        const apiUrl = 'https://api.ubed.my.id/ai/Ubed2';
         const imageApiUrl = 'https://api.ubed.my.id/maker/Jadi-Apa-Aja';
         let uploadedImageFile = null; // Variabel untuk menyimpan file gambar yang diunggah
 
@@ -492,7 +492,7 @@
             reader.onload = () => {
               resolve(reader.result);
             };
-            reader.onerror = reject;
+           reader.onerror = reject;
             reader.readAsDataURL(file);
           });
         }
