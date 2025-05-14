@@ -305,6 +305,12 @@
       const imageApiUrl = 'https://api.ubed.my.id/maker/Jadi-Apa-Aja';
       let uploadedImageFile = null; // Variabel untuk menyimpan file gambar yang diunggah
 
+      // Pesan sambutan bot
+      const welcomeMessage = "Selamat datang di Ubed Ai , Mulai hari mu dengan penuh semangat dan gembira. Ubed Disini siap membantu Kamu untuk Melakukan Hal apapun. Perlu Bantuan Tentang Ubed Bot? Atau Ubed Api? Tinggal tanyakan saja saya, Saya bisa membimbing Mu";
+
+      // Tambahkan pesan sambutan bot saat halaman dimuat
+      appendMessage('bot', welcomeMessage);
+
       // Fungsi untuk menambahkan pesan ke tampilan chat
       function appendMessage(sender, message, imageUrl = null) {
         const messageContainer = document.createElement('div');
@@ -340,7 +346,6 @@
           const botIcon = document.createElement('i');
           botIcon.classList.add('fas', 'fa-robot', 'bot-icon');
 
-          messageContainer.appendChild(botIcon);
           messageContainer.appendChild(messageDiv);
         }
         chatMessages.appendChild(messageContainer);
@@ -543,3 +548,4 @@
   </script>
 </body>
 </html>
+
