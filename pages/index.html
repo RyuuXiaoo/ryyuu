@@ -230,9 +230,15 @@
       max-width: fit-content; /* Lebar sesuai konten (titik-titik) */
       padding: 0.5rem; /* Sesuaikan padding jika perlu */
     }
+    body {
+      background-image: url('https://files.catbox.moe/94g15c.jpeg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
   </style>
 </head>
-<body class="bg-[#0f0f1a] text-gray-100 font-[Poppins]">
+<body class="bg-transparent text-gray-100 font-[Poppins]">
   <script src="https://kit.fontawesome.com/b4ed7c902a.js" crossorigin="anonymous"></script>
   <div id="loading-screen" class="fixed inset-0 bg-[#0f0f1a] flex items-center justify-center z-50">
     <div class="text-center">
@@ -255,297 +261,309 @@
           <i class="fas fa-bars"></i>
         </button>
         <div id="webtitle-header" class="flex text-center items-center font-semibold text-[20px] text-gray-100">UBED AI</div>
-        <a href="https://api.ubed.my.id" class="absolute top-1 right-1 bg-rgba(30, 41, 59, 0.8) text-white border-none padding-0.5rem-0.75rem border-radius-0.25rem cursor-pointer font-size-0.8rem z-30" aria-label="Kembali ke Dokumentasi">
-          <i class="fas fa-lock"></i>
-        </a>
         <div class="flex items-center">
-          </div>
+          <a href="wa.me/6285147777105" class="bg-rgba(30, 41, 59, 0.8) text-white border-none padding-0.5rem-0.75rem border-radius-0.25rem cursor-pointer font-size-0.8rem z-30 mr-2" aria-label="WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+          </a>
+          <button id="refreshButton" class="bg-rgba(30, 41, 59, 0.8) text-white border-none padding-0.5rem-0.75rem border-radius-0.25rem cursor-pointer font-size-0.8rem z-30 mr-2" aria-label="Refresh">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+          <a href="https://api.ubed.my.id" class="bg-rgba(30, 41, 59, 0.8) text-white border-none padding-0.5rem-0.75rem border-radius-0.25rem cursor-pointer font-size-0.8rem z-30" aria-label="Kembali ke Halaman Utama">
+            <i class="fas fa-home"></i>
+          </a>
+        </div>
       </header>
 
-  <main class="flex-1 overflow-x-hidden overflow-y-auto mt-[5rem] bg-[#0f0f1a] flex flex-col chat-main">
-    <div class="chat-messages" id="chatMessages">
+      <main class="flex-1 overflow-x-hidden overflow-y-auto mt-[5rem] bg-transparent flex flex-col chat-main">
+        <div class="chat-messages" id="chatMessages">
+        </div>
+      </main>
+
+      <div id="imagePreviewContainer">
+        <img id="imagePreview" src="#" alt="Pratinjau">
+        <button id="cancelPreview"><i class="fas fa-times"></i></button>
       </div>
-  </main>
 
-  <div id="imagePreviewContainer">
-    <img id="imagePreview" src="#" alt="Pratinjau">
-    <button id="cancelPreview"><i class="fas fa-times"></i></button>
-  </div>
-
-  <div class="input-upload-area">
-    <input type="file" id="imageUpload" class="hidden" accept="image/*">
-    <button id="uploadButton" class="upload-button" aria-label="Upload Gambar">
-      <i class="fas fa-image"></i>
-    </button>
-    <input type="text" id="chatInput" class="chat-input" placeholder="Ketik pesan...">
-    <button class="send-button" id="sendButton">Kirim</button>
-  </div>
-</div>
+      <div class="input-upload-area">
+        <input type="file" id="imageUpload" class="hidden" accept="image/*">
+        <button id="uploadButton" class="upload-button" aria-label="Upload Gambar">
+          <i class="fas fa-image"></i>
+        </button>
+        <input type="text" id="chatInput" class="chat-input" placeholder="Ketik pesan...">
+        <button class="send-button" id="sendButton">Kirim</button>
+      </div>
+    </div>
 
   </div>    <footer class="fixed bottom-0 right-0 left-0 bg-[#181828] text-s text-center py-4 text-gray-100">
     </footer>    <script>
-    window.addEventListener("load", function () {
-      const loader = document.getElementById("loading-screen");
-      setTimeout(() => {
-        loader.classList.add("hidden");
-      }, 1500);
-    });
+      window.addEventListener("load", function () {
+        const loader = document.getElementById("loading-screen");
+        setTimeout(() => {
+          loader.classList.add("hidden");
+        }, 1500);
+      });
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const chatMessages = document.getElementById('chatMessages');
-      const chatInput = document.getElementById('chatInput');
-      const sendButton = document.getElementById('sendButton');
-      const uploadButton = document.getElementById('uploadButton');
-      const imageUpload = document.getElementById('imageUpload');
-      const imagePreviewContainer = document.getElementById('imagePreviewContainer');
-      const imagePreview = document.getElementById('imagePreview');
-      const cancelPreviewButton = document.getElementById('cancelPreview');
-      const apiKey = 'ubed2407';
-      const apiUrl = 'https://api.ubed.my.id/ai/simi';
-      const imageApiUrl = 'https://api.ubed.my.id/maker/Jadi-Apa-Aja';
-      let uploadedImageFile = null; // Variabel untuk menyimpan file gambar yang diunggah
+      document.addEventListener('DOMContentLoaded', () => {
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendButton = document.getElementById('sendButton');
+        const uploadButton = document.getElementById('uploadButton');
+        const imageUpload = document.getElementById('imageUpload');
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+        const cancelPreviewButton = document.getElementById('cancelPreview');
+        const refreshButton = document.getElementById('refreshButton'); // Tambahkan variabel untuk tombol refresh
+        const apiKey = 'ubed2407';
+        const apiUrl = 'https://api.ubed.my.id/ai/simi';
+        const imageApiUrl = 'https://api.ubed.my.id/maker/Jadi-Apa-Aja';
+        let uploadedImageFile = null; // Variabel untuk menyimpan file gambar yang diunggah
 
-      // Pesan sambutan bot
-      const welcomeMessage = "Selamat datang di Ubed Ai , Mulai hari mu dengan penuh semangat dan gembira. Ubed Disini siap membantu Kamu untuk Melakukan Hal apapun. Perlu Bantuan Tentang Ubed Bot? Atau Ubed Api? Tinggal tanyakan saja saya, Saya bisa membimbing Mu";
+        // Pesan sambutan bot yang diperbaiki
+        const welcomeMessage = "Selamat datang di Ubed AI! Mulai hari Anda dengan semangat. Ubed siap membantu Anda melakukan apa pun. Perlu bantuan tentang Ubed Bot atau Ubed API? Tanyakan saja, saya bisa membimbing Anda.";
 
-      // Tambahkan pesan sambutan bot saat halaman dimuat
-      appendMessage('bot', welcomeMessage);
+        // Tambahkan pesan sambutan bot saat halaman dimuat
+        appendMessage('bot', welcomeMessage);
 
-      // Fungsi untuk menambahkan pesan ke tampilan chat
-      function appendMessage(sender, message, imageUrl = null) {
-        const messageContainer = document.createElement('div');
-        messageContainer.classList.add('message-container');
-        const messageDiv = document.createElement('div');
-        messageDiv.classList.add('message');
-
-        if (imageUrl) {
-          const img = document.createElement('img');
-          img.src = imageUrl;
-          img.classList.add('max-h-40', 'rounded-md');
-          messageDiv.appendChild(document.createTextNode(message));
-          messageDiv.appendChild(document.createElement('br'));
-          messageDiv.appendChild(img);
-        } else {
-          messageDiv.textContent = message;
-        }
-
-        if (sender === 'user') {
-          messageContainer.classList.add('user-message-container');
-          messageDiv.classList.add('user-message');
-          const userIcon = document.createElement('i');
-          userIcon.classList.add('fas', 'fa-user-circle', 'user-icon');
-          const chatBubbleIcon = document.createElement('i');
-          chatBubbleIcon.classList.add('fas', 'fa-comment', 'user-icon', 'ml-1');
-          messageContainer.appendChild(messageDiv);
-          messageContainer.appendChild(userIcon);
-          messageContainer.appendChild(chatBubbleIcon);
-        } else if (sender === 'bot') {
-          messageContainer.classList.add('bot-message-container');
+        // Fungsi untuk menambahkan pesan ke tampilan chat
+        function appendMessage(sender, message, imageUrl = null) {
+          const messageContainer = document.createElement('div');
+          messageContainer.classList.add('message-container');
           const messageDiv = document.createElement('div');
-          messageDiv.classList.add('bot-message');
-          const botIcon = document.createElement('i');
-          botIcon.classList.add('fas', 'fa-robot', 'bot-icon');
+          messageDiv.classList.add('message');
 
-          messageContainer.appendChild(messageDiv);
-        }
-        chatMessages.appendChild(messageContainer);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }
-
-      // Fungsi untuk mengirim pesan teks ke API
-      async function sendTextMessage(message) {
-        appendMessage('user', message);
-        appendBotTypingIndicator(); // Tampilkan indikator mengetik
-
-        try {
-          const response = await fetch(`${apiUrl}?apikey=${apiKey}&text=${encodeURIComponent(message)}`);
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+          if (imageUrl) {
+            const img = document.createElement('img');
+            img.src = imageUrl;
+            img.classList.add('max-h-40', 'rounded-md');
+            messageDiv.appendChild(document.createTextNode(message));
+            messageDiv.appendChild(document.createElement('br'));
+            messageDiv.appendChild(img);
+          } else {
+            messageDiv.textContent = message;
           }
-          const data = await response.json();
-          removeBotTypingIndicator(); // Hapus indikator mengetik
-          animateBotMessage(data.result || 'Maaf, tidak ada jawaban.'); // Animasikan teks bot
-        } catch (error) {
-          console.error('Error sending message to AI:', error);
-          removeBotTypingIndicator(); // Pastikan indikator dihapus jika ada error
-          appendMessage('bot', 'Maaf, terjadi kesalahan saat menghubungi AI.');
-        }
-      }
 
-      // Fungsi untuk menampilkan animasi typing indicator pada pesan bot terakhir
-      function appendBotTypingIndicator() {
-        const lastBotMessageContainer = chatMessages.lastElementChild;
-        if (lastBotMessageContainer && lastBotMessageContainer.classList.contains('bot-message-container')) {
-          const messageDiv = lastBotMessageContainer.querySelector('.bot-message');
-          if (messageDiv && !messageDiv.querySelector('#typing-indicator')) {
-            messageDiv.classList.add('bot-typing'); // Tambahkan class bot-typing
+          if (sender === 'user') {
+            messageContainer.classList.add('user-message-container');
+            messageDiv.classList.add('user-message');
+            const userIcon = document.createElement('i');
+            userIcon.classList.add('fas', 'fa-user-circle', 'user-icon');
+            const chatBubbleIcon = document.createElement('i');
+            chatBubbleIcon.classList.add('fas', 'fa-comment', 'user-icon', 'ml-1');
+            messageContainer.appendChild(messageDiv);
+            messageContainer.appendChild(userIcon);
+            messageContainer.appendChild(chatBubbleIcon);
+          } else if (sender === 'bot') {
+            messageContainer.classList.add('bot-message-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('bot-message');
+            const botIcon = document.createElement('i');
+            botIcon.classList.add('fas', 'fa-robot', 'bot-icon');
+
+            messageContainer.appendChild(botIcon);
+            messageContainer.appendChild(messageDiv);
+          }
+          chatMessages.appendChild(messageContainer);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Fungsi untuk mengirim pesan teks ke API
+        async function sendTextMessage(message) {
+          appendMessage('user', message);
+          appendBotTypingIndicator(); // Tampilkan indikator mengetik
+
+          try {
+            const response = await fetch(`${apiUrl}?apikey=${apiKey}&text=${encodeURIComponent(message)}`);
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            removeBotTypingIndicator(); // Hapus indikator mengetik
+            animateBotMessage(data.result || 'Maaf, tidak ada jawaban.'); // Animasikan teks bot
+          } catch (error) {
+            console.error('Error sending message to AI:', error);
+            removeBotTypingIndicator(); // Pastikan indikator dihapus jika ada error
+            appendMessage('bot', 'Maaf, terjadi kesalahan saat menghubungi AI.');
+          }
+        }
+
+        // Fungsi untuk menampilkan animasi typing indicator pada pesan bot terakhir
+        function appendBotTypingIndicator() {
+          const lastBotMessageContainer = chatMessages.lastElementChild;
+          if (lastBotMessageContainer && lastBotMessageContainer.classList.contains('bot-message-container')) {
+            const messageDiv = lastBotMessageContainer.querySelector('.bot-message');
+            if (messageDiv && !messageDiv.querySelector('#typing-indicator')) {
+              messageDiv.classList.add('bot-typing'); // Tambahkan class bot-typing
+              const typingIndicator = document.createElement('div');
+              typingIndicator.id = 'typing-indicator';
+              typingIndicator.innerHTML = '<span>.</span><span>.</span><span>.</span>';
+              messageDiv.appendChild(typingIndicator);
+            }
+          } else {
+            // Jika tidak ada pesan bot, buat pesan baru dengan typing indicator
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add('bot-message-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('bot-message', 'bot-typing'); // Tambahkan class bot-typing
+            const botIcon = document.createElement('i');
+            botIcon.classList.add('fas', 'fa-robot', 'bot-icon');
             const typingIndicator = document.createElement('div');
             typingIndicator.id = 'typing-indicator';
             typingIndicator.innerHTML = '<span>.</span><span>.</span><span>.</span>';
             messageDiv.appendChild(typingIndicator);
-          }
-        } else {
-          // Jika tidak ada pesan bot, buat pesan baru dengan typing indicator
-          const messageContainer = document.createElement('div');
-          messageContainer.classList.add('bot-message-container');
-          const messageDiv = document.createElement('div');
-          messageDiv.classList.add('bot-message', 'bot-typing'); // Tambahkan class bot-typing
-          const botIcon = document.createElement('i');
-          botIcon.classList.add('fas', 'fa-robot', 'bot-icon');
-          const typingIndicator = document.createElement('div');
-          typingIndicator.id = 'typing-indicator';
-          typingIndicator.innerHTML = '<span>.</span><span>.</span><span>.</span>';
-          messageDiv.appendChild(typingIndicator);
-          messageContainer.appendChild(botIcon);
-          messageContainer.appendChild(messageDiv);
-          chatMessages.appendChild(messageContainer);
-          chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-      }
-
-      // Fungsi untuk menghapus animasi typing indicator pada pesan bot terakhir
-      function removeBotTypingIndicator() {
-        const lastBotMessageContainer = chatMessages.lastElementChild;
-        if (lastBotMessageContainer && lastBotMessageContainer.classList.contains('bot-message-container')) {
-          const messageDiv = lastBotMessageContainer.querySelector('.bot-message');
-          if (messageDiv) {
-            messageDiv.classList.remove('bot-typing'); // Hapus class bot-typing
-            const typingIndicator = messageDiv.querySelector('#typing-indicator');
-            if (typingIndicator) {
-              messageDiv.removeChild(typingIndicator);
-            }
+            messageContainer.appendChild(botIcon);
+            messageContainer.appendChild(messageDiv);
+            chatMessages.appendChild(messageContainer);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
           }
         }
-      }
 
-      // Fungsi untuk menampilkan animasi teks bot satu per satu
-      function animateBotMessage(text) {
-        const lastBotMessageContainer = chatMessages.lastElementChild;
-        if (lastBotMessageContainer && lastBotMessageContainer.classList.contains('bot-message-container')) {
-          const messageDiv = lastBotMessageContainer.querySelector('.bot-message');
-          if (messageDiv) {
-            messageDiv.textContent = ''; // Kosongkan teks awal
-            let index = 0;
-            function typeWriter() {
-              if (index < text.length) {
-                messageDiv.textContent += text.charAt(index);
-                index++;
-                setTimeout(typeWriter, 50); // Atur kecepatan munculnya huruf (ms)
+        // Fungsi untuk menghapus animasi typing indicator pada pesan bot terakhir
+        function removeBotTypingIndicator() {
+          const lastBotMessageContainer = chatMessages.lastElementChild;
+          if (lastBotMessageContainer && lastBotMessageContainer.classList.contains('bot-message-container')) {
+            const messageDiv = lastBotMessageContainer.querySelector('.bot-message');
+            if (messageDiv) {
+              messageDiv.classList.remove('bot-typing'); // Hapus class bot-typing
+              const typingIndicator = messageDiv.querySelector('#typing-indicator');
+              if (typingIndicator) {
+                messageDiv.removeChild(typingIndicator);
               }
             }
-            typeWriter();
           }
         }
-      }
 
-      // Fungsi untuk mengirim gambar ke API
-      async function sendImageToAPI(imageFile) {
-        appendBotTypingIndicator(); // Tampilkan indikator mengetik
+        // Fungsi untuk menampilkan animasi teks bot satu per satu
+        function animateBotMessage(text) {
+          const lastBotMessageContainer = chatMessages.lastElementChild;
+          if (lastBotMessageContainer && lastBotMessageContainer.classList.contains('bot-message-container')) {
+            const messageDiv = lastBotMessageContainer.querySelector('.bot-message');
+            if (messageDiv) {
+              messageDiv.textContent = ''; // Kosongkan teks awal
+              let index = 0;
+              function typeWriter() {
+                if (index < text.length) {
+                  messageDiv.textContent += text.charAt(index);
+                  index++;
+                  setTimeout(typeWriter, 50); // Atur kecepatan munculnya huruf (ms)
+                }
+              }
+              typeWriter();
+            }
+          }
+        }
 
-        try {
-          const formData = new FormData();
-          formData.append('imageUrl', await convertImageToBase64(imageFile));
-          formData.append('text', 'Pakai hijab');
-          formData.append('apikey', apiKey);
+        // Fungsi untuk mengirim gambar ke API
+        async function sendImageToAPI(imageFile) {
+          appendBotTypingIndicator(); // Tampilkan indikator mengetik
 
-          const response = await fetch(imageApiUrl, {
-            method: 'POST',
-            body: formData,
+          try {
+            const formData = new FormData();
+            formData.append('imageUrl', await convertImageToBase64(imageFile));
+            formData.append('text', 'Pakai hijab');
+            formData.append('apikey', apiKey);
+
+            const response = await fetch(imageApiUrl, {
+              method: 'POST',
+              body: formData,
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const blob = await response.blob();
+            const imageObjectURL = URL.createObjectURL(blob);
+            removeBotTypingIndicator(); // Hapus indikator mengetik
+            const botResponseMessage = 'Ini hasilnya:';
+            appendMessage('bot', botResponseMessage, imageObjectURL); // Tampilkan teks statis sebelum gambar
+            // Tidak perlu animasi teks satu per satu untuk pesan dengan gambar,
+            // atau kamu bisa menyesuaikannya jika ingin menganimasikan teks "Ini hasilnya:"
+          } catch (error) {
+            console.error('Error sending image to AI:', error);
+            removeBotTypingIndicator(); // Pastikan indikator dihapus jika ada error
+            appendMessage('bot', 'Maaf, terjadi kesalahan saat memproses gambar.');
+          }
+        }
+
+           // Fungsi untuk mengkonversi gambar menjadi base64 (diperlukan oleh API)
+        function convertImageToBase64(file) {
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              resolve(reader.result);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
           });
+        }
 
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        // Event listener untuk tombol kirim
+        sendButton.addEventListener('click', () => {
+          const userMessage = chatInput.value.trim();
+          if (uploadedImageFile) {
+            // Kirim gambar jika ada file yang diunggah
+            appendMessage('user', `Gambar terkirim: ${uploadedImageFile.name}`, imagePreview.src); // Tampilkan gambar di chat pengguna
+            sendImageToAPI(uploadedImageFile);
+            // Reset tampilan pratinjau dan file setelah dikirim
+            imagePreview.src = '#';
+            imagePreviewContainer.style.display = 'none';
+            imageUpload.value = '';
+            uploadedImageFile = null;
+            chatInput.value = ''; // Kosongkan input teks setelah mengirim gambar
+          } else if (userMessage) {
+            // Kirim pesan teks jika tidak ada gambar
+            sendTextMessage(userMessage);
+            chatInput.value = '';
           }
-
-          const blob = await response.blob();
-          const imageObjectURL = URL.createObjectURL(blob);
-          removeBotTypingIndicator(); // Hapus indikator mengetik
-          const botResponseMessage = 'Ini hasilnya:';
-          appendMessage('bot', botResponseMessage, imageObjectURL); // Tampilkan teks statis sebelum gambar
-          // Tidak perlu animasi teks satu per satu untuk pesan dengan gambar,
-          // atau kamu bisa menyesuaikannya jika ingin menganimasikan teks "Ini hasilnya:"
-        } catch (error) {
-          console.error('Error sending image to AI:', error);
-          removeBotTypingIndicator(); // Pastikan indikator dihapus jika ada error
-          appendMessage('bot', 'Maaf, terjadi kesalahan saat memproses gambar.');
-        }
-      }
-
-      // Fungsi untuk mengkonversi gambar menjadi base64 (diperlukan oleh API)
-      function convertImageToBase64(file) {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => {
-            resolve(reader.result);
-          };
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
         });
-      }
 
-      // Event listener untuk tombol kirim
-      sendButton.addEventListener('click', () => {
-        const userMessage = chatInput.value.trim();
-        if (uploadedImageFile) {
-          // Kirim gambar jika ada file yang diunggah
-          appendMessage('user', `Gambar terkirim: ${uploadedImageFile.name}`, imagePreview.src); // Tampilkan gambar di chat pengguna
-          sendImageToAPI(uploadedImageFile);
-          // Reset tampilan pratinjau dan file setelah dikirim
+        // Event listener untuk input teks (tekan Enter)
+        chatInput.addEventListener('keypress', (event) => {
+          if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            sendButton.click();
+          }
+        });
+
+        // Event listener untuk tombol upload gambar
+        uploadButton.addEventListener('click', () => {
+          imageUpload.click();
+        });
+
+        // Event listener untuk input file gambar
+        imageUpload.addEventListener('change', handleImageUpload);
+
+        // Event listener untuk tombol batal pratinjau
+        cancelPreviewButton.addEventListener('click', () => {
           imagePreview.src = '#';
           imagePreviewContainer.style.display = 'none';
-          imageUpload.value = '';
-          uploadedImageFile = null;
-          chatInput.value = ''; // Kosongkan input teks setelah mengirim gambar
-        } else if (userMessage) {
-          // Kirim pesan teks jika tidak ada gambar
-          sendTextMessage(userMessage);
-          chatInput.value = '';
+          imageUpload.value = ''; // Reset input file
+          uploadedImageFile = null; // Reset juga file yang diunggah
+        });
+
+        // Event listener untuk tombol refresh
+        refreshButton.addEventListener('click', () => {
+          window.location.reload(); // Muat ulang halaman
+        });
+
+        // Fungsi untuk menangani upload gambar
+        function handleImageUpload() {
+          const file = imageUpload.files?.[0]; // Gunakan optional chaining
+          if (file) {
+            uploadedImageFile = file; // Simpan file gambar
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              imagePreview.src = e.target.result;
+              imagePreviewContainer.style.display = 'flex';
+            };
+            reader.readAsDataURL(file);
+          } else {
+            uploadedImageFile = null;
+            imagePreview.src = '#';
+            imagePreviewContainer.style.display = 'none';
+          }
         }
       });
-
-      // Event listener untuk input teks (tekan Enter)
-      chatInput.addEventListener('keypress', (event) => {
-        if (event.key === 'Enter' && !event.shiftKey) {
-          event.preventDefault();
-          sendButton.click();
-        }
-      });
-
-      // Event listener untuk tombol upload gambar
-      uploadButton.addEventListener('click', () => {
-        imageUpload.click();
-      });
-
-      // Event listener untuk input file gambar
-      imageUpload.addEventListener('change', handleImageUpload);
-
-      // Event listener untuk tombol batal pratinjau
-      cancelPreviewButton.addEventListener('click', () => {
-        imagePreview.src = '#';
-        imagePreviewContainer.style.display = 'none';
-        imageUpload.value = ''; // Reset input file
-        uploadedImageFile = null; // Reset juga file yang diunggah
-      });
-
-      // Fungsi untuk menangani upload gambar
-      function handleImageUpload() {
-        const file = imageUpload.files?.[0]; // Gunakan optional chaining
-        if (file) {
-          uploadedImageFile = file; // Simpan file gambar
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            imagePreview.src = e.target.result;
-            imagePreviewContainer.style.display = 'flex';
-          };
-          reader.readAsDataURL(file);
-        } else {
-          uploadedImageFile = null;
-          imagePreview.src = '#';
-          imagePreviewContainer.style.display = 'none';
-        }
-      }
-    });
-  </script>
+    </script>
 </body>
 </html>
-
