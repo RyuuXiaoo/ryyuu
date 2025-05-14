@@ -492,4 +492,78 @@
             reader.onload = () => {
               resolve(reader.result);
             };
-            reader.onerror = rej
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+        }
+
+        // Event listener untuk tombol kirim
+        sendButton.addEventListener('click', () => {
+          const userMessage = chatInput.value.trim();
+          if (uploadedImageFile) {
+            // Kirim gambar jika ada file yang diunggah
+            appendMessage('user', `Gambar terkirim: ${uploadedImageFile.name}`, imagePreview.src); // Tampilkan gambar di chat pengguna
+            sendImageToAPI(uploadedImageFile);
+            // Reset tampilan pratinjau dan file setelah dikirim
+            imagePreview.src = '#';
+            imagePreviewContainer.style.display = 'none';
+            imageUpload.value = '';
+            uploadedImageFile = null;
+            chatInput.value = ''; // Kosongkan input teks setelah mengirim gambar
+          } else if (userMessage) {
+            // Kirim pesan teks jika tidak ada gambar
+            sendTextMessage(userMessage);
+            chatInput.value = '';
+          }
+        });
+
+        // Event listener untuk input teks (tekan Enter)
+        chatInput.addEventListener('keypress', (event) => {
+          if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            sendButton.click();
+          }
+        });
+
+        // Event listener untuk tombol upload gambar
+        uploadButton.addEventListener('click', () => {
+          imageUpload.click();
+        });
+
+        // Event listener untuk input file gambar
+        imageUpload.addEventListener('change', handleImageUpload);
+
+        // Event listener untuk tombol batal pratinjau
+        cancelPreviewButton.addEventListener('click', () => {
+          imagePreview.src = '#';
+          imagePreviewContainer.style.display = 'none';
+          imageUpload.value = ''; // Reset input file
+          uploadedImageFile = null; // Reset juga file yang diunggah
+        });
+
+        // Event listener untuk tombol refresh
+        refreshButton.addEventListener('click', () => {
+          window.location.reload(); // Muat ulang halaman
+        });
+
+        // Fungsi untuk menangani upload gambar
+        function handleImageUpload() {
+          const file = imageUpload.files?.[0]; // Gunakan optional chaining
+          if (file) {
+            uploadedImageFile = file; // Simpan file gambar
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              imagePreview.src = e.target.result;
+              imagePreviewContainer.style.display = 'flex';
+            };
+            reader.readAsDataURL(file);
+          } else {
+            uploadedImageFile = null;
+            imagePreview.src = '#';
+            imagePreviewContainer.style.display = 'none';
+          }
+        }
+      });
+    </script>
+</body>
+</html>
