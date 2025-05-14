@@ -270,7 +270,7 @@
           <i class="fas fa-bars"></i>
         </button>
         <div id="webtitle-header" class="flex text-center items-center font-semibold text-[20px] text-gray
-        -100">UBED AI</div>
+-100">UBED AI</div>
         <div class="flex items-center">
           <a href="wa.me/6285147777105" class="bg-rgba(30, 41, 59, 0.8) text-white border-none padding-0.5rem-0.75rem border-radius-0.25rem cursor-pointer font-size-0.8rem z-30 mr-2" aria-label="WhatsApp">
             <i class="fab fa-whatsapp"></i>
@@ -332,13 +332,18 @@
             welcomeOverlay.style.display = 'none';
           }
           // Hapus event listener agar tidak terus berjalan
-          chatInput.removeEventListener('input', hideWelcomeMessage);
-          sendButton.removeEventListener('click', hideWelcomeMessage);
+          chatInput.removeEventListener('focus', hideWelcomeMessage);
         }
 
-        // Tambahkan event listener untuk menyembunyikan pesan sambutan saat input berubah atau tombol kirim diklik
-        chatInput.addEventListener('input', hideWelcomeMessage, { once: true });
-        sendButton.addEventListener('click', hideWelcomeMessage, { once: true });
+        // Sembunyikan pesan sambutan setelah 5 detik (misalnya)
+        setTimeout(() => {
+          if (welcomeOverlay) {
+            welcomeOverlay.style.display = 'none';
+          }
+        }, 5000); // 5000 milidetik = 5 detik
+
+        // Sembunyikan pesan sambutan saat input chat mendapatkan fokus pertama kali
+        chatInput.addEventListener('focus', hideWelcomeMessage, { once: true });
 
         // Fungsi untuk menambahkan pesan ke tampilan chat
         function appendMessage(sender, message, imageUrl = null) {
